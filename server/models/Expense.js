@@ -25,6 +25,10 @@ const expenseSchema = new Schema(
             ref: "User", 
             required: true 
           },
+          month: {
+            type: String, //should use YYYY-MM Format
+            required:true,
+          }
     }
 );
 

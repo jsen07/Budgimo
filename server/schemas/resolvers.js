@@ -1,6 +1,5 @@
 const { AuthenticationError, ApolloError } = require("apollo-server-express");
 const { User, Expense, Category } = require("../models");
-const { model } = require('mongoose');
 const { signToken } = require("../utils/auth");
 
 const resolvers = {
@@ -22,10 +21,12 @@ const resolvers = {
             try {
               const userProfile = await User.findById(userId);
               if (!userProfile) {
-                console.log("User not found");
+                throw new Error("Failed to fetch User.");
               }
               return userProfile;
-            } catch (error) {}
+            } catch (error) {
+              throw new Error(error)
+            }
           },
 
           getExpensesByCategory: async (parent, { categoryId }) => {
@@ -156,15 +157,19 @@ const resolvers = {
       
           const category = await Category.findById(categoryId);
           if (!category) {
-            throw new Error('Category not found');
+            throw new ApolloError('Category not found');
           }
+
+          const formatDate = new Date(date);
+          const yearMonth = formatDate.getFullYear() + '-' + (formatDate.getMonth() + 1).toString().padStart(2, '0');
       
           const expense = new Expense({
             name,
             amount,
-            date: new Date(date), 
+            date: formatDate, 
             categoryId,
             userId,
+            month: yearMonth
           });
       
           const savedExpense = await expense.save();
@@ -173,12 +178,11 @@ const resolvers = {
       
           return populatedExpense;
         } catch (error) {
-          console.error('Error creating expense:', error);
-          throw new Error('Failed to create expense');
+          throw new ApolloError('Failed to add expense');
         }
       },
 
-      addCategory: async (_, { name, isCustom, userId }) => {
+      addCategory: async (parent, { name, isCustom, userId }) => {
         try {
           const newCategory = new Category({
             name,
@@ -189,10 +193,90 @@ const resolvers = {
           await newCategory.save();
           return newCategory;
         } catch (error) {
-          throw new Error(error);
+          throw new ApolloError('Failed to add category');
         }
       },
+
+      editCategory: async (parent, { id, name }) => {
+        try {
+          const updatedCategory = await Category.findByIdAndUpdate(
+            id,
+            { name },
+            { new: true } );
+
+            if (!updatedCategory) {
+              throw new Error("Category not found");
+            }    
+
+            return updatedCategory
+        } catch (error) {
+          throw new ApolloError('Failed to edit category');
+        }
+      },
+
+      deleteCategory: async (parent, { id }) => {
+        try {
+          const categoryToDelete = await Category.findById(id );
+
+            if (!categoryToDelete) {
+              throw new Error('Category not found');
+            }
+
+          //delete expenses inside category and delete category after
+          const deleteExpenses = await Expense.deleteMany( { categoryId: id } );
+          const deleteCategory = await Category.deleteOne( {_id: id } );
+
+          return {
+            success: true,
+            message: 'Category and related expenses deleted successfully',
+            deletedCategoryId: categoryToDelete.id 
+          };
+          
+  
+        } catch (error) {
+          throw new ApolloError('Failed to delete category');
+        }
+      },
+
+      
+    editExpense: async (parent, { id, userData }, context) => {
+      try {
+
+        if (userData.date) {
+          const expenseDate = new Date(userData.date);
+          userData.month = expenseDate.getFullYear() + '-' + (expenseDate.getMonth() + 1).toString().padStart(2, '0');
+        }
+
+        const updatedExpense = await Expense.findByIdAndUpdate(
+          id,
+          { $set: userData },
+          { new: true } 
+        );
+    
+        if (!updatedExpense) {
+          throw new Error("Expense not found");
+        }
+    
+        return updatedExpense
+
+      } catch (error) {
+        throw new Error(error.message);
+      }
     },
+
+    deleteExpense: async (parent, { id }, context) => {
+      try {
+
+        const deleteExpense = await Expense.findByIdAndDelete(id);
+    
+    
+        return deleteExpense
+
+      } catch (error) {
+        throw new Error(error.message);
+      }
+    }
+  },
   
   };
   

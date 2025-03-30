@@ -7,6 +7,7 @@ export const getExpensesByCategory = gql`
             name
             amount
             date
+            month
             category {
             id
             name
@@ -15,6 +16,7 @@ export const getExpensesByCategory = gql`
             id
             username
         }
+            month
     }
 }`
 
@@ -25,6 +27,7 @@ export const getAllExpensesByUser = gql`
             name
             amount
             date
+            month
             category {
             id
             name

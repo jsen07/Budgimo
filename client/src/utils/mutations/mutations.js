@@ -40,6 +40,26 @@ export const addCategory = gql`
   }
 `;
 
+export const editCategory = gql`
+  mutation editCategory($id: ID!, $name: String!) {
+    editCategory(id: $id, name: $name) {
+      id
+      name
+      isCustom
+    }
+  }
+`;
+
+export const deleteCategory = gql`
+  mutation deleteCategory($id: ID!) {
+    deleteCategory(id: $id) {
+    success
+    message
+    deletedCategoryId
+    }
+  }
+`;
+
 export const addExpense = gql`
   mutation addExpense($name: String!, $amount: Float!, $date: String!, $categoryId: ID!, $userId: ID!) {
     addExpense(name: $name, amount: $amount, date: $date, categoryId: $categoryId, userId: $userId) {
@@ -51,6 +71,31 @@ export const addExpense = gql`
         id
         name
       }
+    }
+  }
+`;
+
+
+export const editExpense = gql`
+  mutation editExpense($id: ID!, $userData: ExpenseInput!) {
+    editExpense(id: $id, userData: $userData) {
+      id
+      name
+      amount
+      date
+      month
+    }
+  }
+`;
+
+export const deleteExpense = gql`
+  mutation deleteExpense($id: ID!) {
+    deleteExpense(id: $id) {
+      id
+      name
+      amount
+      date
+      month
     }
   }
 `;

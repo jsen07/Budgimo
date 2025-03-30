@@ -17,6 +17,7 @@ type Expense {
     date: String!
     category: Category!
     user: User!
+    month: String!
 }
 
 type Category {
@@ -41,6 +42,18 @@ type Category {
     email: String!
   }
 
+   input ExpenseInput {
+    name: String!
+    amount: Float!
+    date: String!
+  }
+  
+    type DeleteCategoryResponse {
+    success: Boolean!
+    message: String!
+    deletedCategoryId: ID!
+  }
+
   # Queries
   type Query {
     user(id: ID!): User
@@ -56,7 +69,11 @@ type Category {
     register(userData: UserInput!, password: String!): Auth
     updateUser(id: ID!, userData: UserInput!): User
     addCategory(name: String!, isCustom: Boolean!, userId: ID!): Category!
+    editCategory(id: ID!, name: String!): Category
+    deleteCategory(id: ID!): DeleteCategoryResponse!
     addExpense(name: String!, amount: Float!, date: String!, categoryId: ID!, userId: ID!): Expense!
+    editExpense(id: ID!, userData: ExpenseInput!): Expense
+    deleteExpense(id: ID!): Expense
   }
 `;
 

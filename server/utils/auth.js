@@ -1,6 +1,7 @@
 const jwt = require("jsonwebtoken");
+require('dotenv').config();
 
-const secret = process.env.SECRET_PASSWORD
+const secret = process.env.SECRET_PASSWORD;
 const expiration = "48h";
 
 module.exports = {
@@ -13,7 +14,6 @@ module.exports = {
     }
 
     if (!token) {
-      console.log('No token provided');
       return req;
     }
 
