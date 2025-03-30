@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 require('dotenv').config();
 
-// const mongoDB_uri_password = process.env.MONGODB_URI_PASSWORD
+const mongoDB_uri = process.env.MONGODB_URI;
 
 mongoose
-  .connect(`mongodb+srv://vaynecaitlyn:czit82EAE4gRrg5l@budgetbuddy-development.xifnuuw.mongodb.net/?retryWrites=true&w=majority&appName=BudgetBuddy-Development`)
+  .connect(mongoDB_uri)
   .then(() => {
     console.log("Connected to the database yay");
   })
