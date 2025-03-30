@@ -1,0 +1,56 @@
+import { gql } from '@apollo/client';
+
+export const registerMutation = gql`
+  mutation Register($userData: userInput!, $password: String!) {
+    register(userData: $userData, password: $password) {
+      token
+      user {
+        id
+        first_name
+        last_name
+        username
+        email
+      }
+    }
+  }
+`;
+
+export const loginMutation = gql`
+  mutation Login($email: String!, $password: String!) {
+    login(email: $email, password: $password) {
+      token
+      user {
+        id
+        email
+        first_name
+        last_name
+        username
+      }
+    }
+  }
+`;
+
+export const addCategory = gql`
+  mutation addCategory($name: String!, $isCustom: Boolean!, $userId: ID!) {
+    addCategory(name: $name, isCustom: $isCustom, userId: $userId) {
+      id
+      name
+      isCustom
+    }
+  }
+`;
+
+export const addExpense = gql`
+  mutation addExpense($name: String!, $amount: Float!, $date: String!, $categoryId: ID!, $userId: ID!) {
+    addExpense(name: $name, amount: $amount, date: $date, categoryId: $categoryId, userId: $userId) {
+      id
+      name
+      amount
+      date
+      category {
+        id
+        name
+      }
+    }
+  }
+`;

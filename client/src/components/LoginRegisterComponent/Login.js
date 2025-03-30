@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
-import { loginMutation } from '../../utils/queries/mutations';
+import { loginMutation } from '../../utils/mutations/mutations';
 import auth from '../../utils/auth/auth'
 
 
