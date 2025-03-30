@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useMutation } from '@apollo/client';
-import { registerMutation } from '../../utils/queries/mutations';
+import { registerMutation } from '../../utils/mutations/mutations';
 
 const RegisterForm = () => {
   const [formData, setFormData] = useState({
