@@ -80,7 +80,7 @@ const LandingPage = () => {
             <h1 className='text-7xl sm:text-8xl text-teal-600 font-hero underline underline-offset-[20%]' style={{ textShadow: '4px 4px 4px rgba(0, 0, 0, 0.5)' }}> Budgimo </h1>
        
 
-          <div className='animate-fade2 lg:mt-10 lg:my-4 lg:w-full lg:w-[650px]'>
+          <div className='animate-fade2 lg:mt-10 lg:my-4 lg:w-full lg:w-[700px]'>
           {/* <h2 className='text-xl font-sans font-thin text-indigo-950 mb-10 text-center'>Join thousands on the journey to financial freedom.</h2> */}
 
           <h1 className='text-medium font-sans font-thin text-black mb-10 text-center mx-4 mt-10 md:mb-1 md:text-start lg:m-0'>
