@@ -97,9 +97,8 @@ const resolvers = {
           const existingEmail = await User.findOne({ email: userData.email });
   
           if (existingEmail) {
-            console.log("Email already in use");
             throw new ApolloError(
-              "Email already in use"
+              err ="Sorry! This e-mail is already in use.", "EMAIL_IN_USE"
             );
           }
   
@@ -107,16 +106,23 @@ const resolvers = {
             ...userData,
             password: password,
           });
-          console.log(userData)
           const token = signToken(newUser);
           
   
           console.log("token:", JSON.stringify(token));
           return { token: token, user: newUser };
         } catch (error) {
-          console.log(error);
-          // console.log(userData)
-          throw error;
+          console.log("Registration error:", error);
+          const existingEmail = await User.findOne({ email: userData.email });
+  
+          if (existingEmail) {
+            throw new ApolloError(
+              err ="Sorry! This e-mail is already in use.", "EMAIL_IN_USE"
+            );
+          }
+          else {
+    throw new ApolloError("Oops! Something went wrong, please try again!");
+          }
         }
       },
 

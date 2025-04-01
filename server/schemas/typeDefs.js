@@ -5,7 +5,6 @@ const typeDefs = gql`
     id: ID!
     first_name: String!
     last_name: String!
-    username: String!
     email: String!
     created_at: String
   }
@@ -38,7 +37,6 @@ type Category {
   input UserInput {
     first_name: String!
     last_name: String!
-    username: String!
     email: String!
   }
 
