@@ -6,6 +6,7 @@ module.exports = {
     extend: {
       fontFamily: {
         hero: ['LeckerliOne', 'sans-serif'],
+        figtree: ['Figtree','sans-serif']
       },
       keyframes: {
         fadeIn: {
