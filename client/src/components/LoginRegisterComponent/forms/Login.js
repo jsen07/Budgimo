@@ -65,7 +65,7 @@ const Login = ({ handleLoginSuccess, handleToggle }) => {
   <h1 className='font-figtreen font-semibold text-[34px] tracking-wide my-5 sm:pl-4'> Login </h1>
   <h2 className=' text-center px-4 font-figtreen font-normal text-sm tracking-wider mb-10 sm:pl-4 sm:px-0 md:text-start'> Log into your account and start managing your expenses! </h2>
 
-    <form onSubmit={handleSubmit} className='border-box flex flex-col w-[80%] h-auto sm:w-3/4 md:w-full md:items-end xl:w-full 2xl:w-full'>
+    <form onSubmit={handleSubmit} className='border-box flex flex-col w-full h-auto sm:w-3/4 md:w-full md:items-end'>
 
     <div id='row-2'className='flex flex-col w-full p-2 mb-2'>
 
@@ -92,7 +92,7 @@ const Login = ({ handleLoginSuccess, handleToggle }) => {
 
         <div className='flex flex-col items-center justify-center md:w-full  md:pl-4 md:flex-row gap-2 sm:flex-row'>
         {error && <p className='text-red-600 md:self-center'>{error}</p>}
-        <button type="submit" disabled={loading} className='border w-full px-3 py-2 rounded-md bg-teal-400 text-black flex items-center justify-center ml-auto md:max-w-[150px]'>
+        <button type="submit" disabled={loading} className='border w-full px-3 py-2 rounded-md bg-teal-400 text-black flex items-center justify-center ml-auto hover:scale-95 transition md:max-w-[150px]'>
         <VpnKeyIcon className='mr-1'/>
           Login
         </button>
