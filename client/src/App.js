@@ -3,7 +3,7 @@ import { ApolloProvider, InMemoryCache, ApolloClient } from '@apollo/client';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LandingPage from './components/LandingPageComponent/LandingPage';
 import LoginRegisterForm from './components/LoginRegisterComponent/LoginRegisterForm';
-import Dashboard from './components/Dashboard';
+import Dashboard from './components/DashboardComponent/Dashboard';
 import auth from './utils/auth/auth'; 
 
 // Initialize Apollo Client

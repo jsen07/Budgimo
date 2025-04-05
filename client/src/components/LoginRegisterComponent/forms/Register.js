@@ -165,7 +165,7 @@ const RegisterForm = ({ handleToggle }) => {
       </div>
       <div className='flex flex-col items-center justify-center md:w-full  md:pl-4 md:flex-row gap-2 sm:flex-row'>
       {err && (<p className='text-red-600 md:self-center'> {err} </p>)}
-      <button type="submit" disabled={loading} className='border w-full px-3 py-2 mr-3 rounded-md bg-teal-400 text-black flex items-center justify-center ml-auto sm:max-w-[150px]'>
+      <button type="submit" disabled={loading} className='border w-full px-3 py-2 mr-3 rounded-md bg-teal-400 text-black flex items-center justify-center ml-auto hover:scale-95 transition sm:max-w-[150px]'>
          <HowToRegIcon className='mr-1'/>
         Register
       </button>

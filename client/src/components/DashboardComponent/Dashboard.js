@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import auth from '../utils/auth/auth'
+import auth from '../../utils/auth/auth'
 
 
 const Dashboard = () => {
