@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import BackgroundImage from '../../assets/images/budgimo-bg.jpg';
-import JulieDaviesImage from '../../assets/images/Julie_Davies_img.jpeg'
-import EkeleAgbaniImage from '../../assets/images/Ekele_Agbani.jpeg'
-import MuhammadImage from '../../assets/images/Muhammad.jpeg'
-import MeiLungImage from '../../assets/images/Mei_Leung.jpeg'
 import { useNavigate } from "react-router-dom";
 import MobileMenu from './subcomponents/MobileMenu';
+import people_reviews from './ProfileCards';
+import FAQ_section from './FAQ'
+import Services_LP from './Services';
+import ContactSection from './ContactSection'
 
 const LandingPage = () => {
 
@@ -13,62 +13,7 @@ const LandingPage = () => {
 
   const [menuActive, setMenuActive] = useState(false);
   const [closing, setClosing] = useState(false);
-  const people_reviews = [
-    {
-      name: "Julie Davis",
-      img: JulieDaviesImage,
-      review:
-      "After buying our first home, my partner and I fell into serious credit card debt trying to furnish it and handle unexpected repairs. I never budgeted before, but after a friend recommended Budgimo, I gave it a shot. One year later, we're debt-free, finally saving, and I'm now budgeting for my wedding and dream honeymoon. Budgimo changed my life."
-    },
-    {
-      name: "Ekele Agbani",
-      img: EkeleAgbaniImage,
-      review:
-      "Since using Budgimo, I paid off 3 credit cards and built an emergency fund. It's a game-changer."
-    },
-    {
-      name: "Muhammad",
-      img : MuhammadImage,
-      review:
-      "Budgimo helped me actually visualise where my money was going. For the first time, I could clearly track my income and expenses, which makes me feel more in control. I’ve become way more mindful with spending and even started putting money aside to invest. It’s been a real breakthrough."
-    },
-    {
-      name: "Mei Leung",
-      img: MeiLungImage,
-      review:
-      "After being made redundant, I knew I had to get smarter with my savings while job hunting. Budgimo helped me manage my money with confidence. I built better spending habits, stayed anxiety-free during unemployment, and even grew my savings. I landed a new job and felt financially stronger than ever."
-    }
-  ]
-  const FAQ_section=[
-    {
-      question: "What is Budgimo?",
-      answer: "Budgimo is a personal budgeting app that helps you track spending, set savings goals, and stay on top of your finances with ease."
-    },
-    {
-      question: "Is Budgimo free to use?",
-      answer: "Yes! Budgimo offers a free version with powerful tools. We also have a premium version with advanced analytics and personalized insights."
-    },
-    {
-      question: "How do I track my expenses?",
-      answer: "You need to manually add your expenses on the sheet"
-    },
-    {
-      question: "Is my financial data safe?",
-      answer: "Absolutely. Your privacy and security are our top priorities."
-    },
-    {
-      question: "Can I set financial goals in the app?",
-      answer: "Definitely. Budgimo makes it easy to create goals like saving for a vacation, paying off debt, or building an emergency fund."
-    },
-    {
-      question: "Is Budgimo available on Android and iOS?",
-      answer: "Yes, Budgimo is available on both Android and iOS so you can manage your money anytime, anywhere."
-    },
-    {
-      question: "How do I get started?",
-      answer: "Just download the app, create an account, and follow the setup steps. You'll be budgeting like a pro in no time."
-    }
-  ]
+
 
   useEffect(() => {
     const handleResize = () => {
@@ -191,8 +136,24 @@ const LandingPage = () => {
           </div>))}
            </section>
 
-           <section id="services"className='text-black h-screen bg-indigo-300'>
-            <h1 className='bg-oklch(0.852 0.199 91.936)'> Services </h1>
+           <section id="services" className="bg-indigo-300 text-black py-10 px-4 min-h-screen">
+  <h1 className="text-3xl font-bold text-center mb-8">Services</h1>
+
+  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+    {Services_LP.map((service, index) => (
+      <div
+        key={index}
+        className="bg-white rounded-2xl shadow-lg p-4 flex flex-col items-center text-center hover:shadow-xl transition"
+      >
+        <img
+          src={service.icon}
+          alt={service.title}
+          className="w-20 h-20 object-cover mb-4 rounded-full"
+        />
+        <h2 className="text-lg font-semibold">{service.title}</h2>
+      </div>
+      ))}
+    </div>
            </section>
 
            <section id="faq"className='text-black h-auto bg-indigo-400 p-6'>
@@ -207,7 +168,7 @@ const LandingPage = () => {
            </section>
 
            <section id="contact"className='text-black h-screen bg-indigo-500'>
-            <h1 className='bg-oklch(0.852 0.199 91.936)'> Contact </h1>
+              <ContactSection />
            </section>
       </div>
   )
