@@ -9,7 +9,7 @@ const typeDefs = gql`
     created_at: String
   }
 
-type Expense {
+  type Expense {
     id: ID!
     name: String!
     amount: Float!
@@ -17,15 +17,15 @@ type Expense {
     category: Category!
     user: User!
     month: String!
-}
+  }
 
-type Category {
+  type Category {
     id: ID!
     name: String!
     isCustom: Boolean!
     user: User!
     expenses: [Expense!]!
-}
+  }
 
   # Authorization type
   type Auth {
@@ -40,13 +40,13 @@ type Category {
     email: String!
   }
 
-   input ExpenseInput {
+  input ExpenseInput {
     name: String!
     amount: Float!
     date: String!
   }
-  
-    type DeleteCategoryResponse {
+
+  type DeleteCategoryResponse {
     success: Boolean!
     message: String!
     deletedCategoryId: ID!
@@ -57,8 +57,8 @@ type Category {
     user(id: ID!): User
     getUserProfile(userId: ID!): User
     getCategories(userId: ID!): [Category!]!
-    getAllExpensesByUser(userId: ID!): [Expense!]!
-    getExpensesByCategory(categoryId: ID!): [Expense!] 
+    getAllExpensesByUser(userId: ID!, limit: Int, orderBy: String): [Expense!]!
+    getExpensesByCategory(categoryId: ID!): [Expense!]
   }
 
   # Mutations
@@ -69,7 +69,13 @@ type Category {
     addCategory(name: String!, isCustom: Boolean!, userId: ID!): Category!
     editCategory(id: ID!, name: String!): Category
     deleteCategory(id: ID!): DeleteCategoryResponse!
-    addExpense(name: String!, amount: Float!, date: String!, categoryId: ID!, userId: ID!): Expense!
+    addExpense(
+      name: String!
+      amount: Float!
+      date: String!
+      categoryId: ID!
+      userId: ID!
+    ): Expense!
     editExpense(id: ID!, userData: ExpenseInput!): Expense
     deleteExpense(id: ID!): Expense
   }
