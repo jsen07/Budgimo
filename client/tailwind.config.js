@@ -1,21 +1,34 @@
 module.exports = {
   content: [
-    "./src/**/*.{js,jsx,ts,tsx}",  // Important for CRA (Create React App)
+    "./src/**/*.{js,jsx,ts,tsx}", // Important for CRA (Create React App)
+  ],
+  safelist: [
+    "border-orange-500",
+    "border-teal-500",
+    "border-violet-500",
+    "border-emerald-500",
+    "border-rose-500",
+    "text-orange-500",
+    "text-teal-500",
+    "text-violet-500",
+    "text-emerald-500",
+    "text-rose-500",
   ],
   theme: {
     extend: {
       fontFamily: {
-        hero: ['LeckerliOne', 'sans-serif'],
-        figtree: ['Figtree','sans-serif']
+        hero: ["LeckerliOne", "sans-serif"],
+        figtree: ["Figtree", "sans-serif"],
+        syne: ["Syne", "sans-serif"],
       },
       keyframes: {
         fadeIn: {
-          '0%': { opacity: 0 },
-          '100%': { opacity: 1 },
+          "0%": { opacity: 0 },
+          "100%": { opacity: 1 },
         },
         slideIn: {
-          '0%': { transform: 'translateY(-100%)' }, // Fixed typo: 'transforM' => 'transform'
-          '100%': { transform: 'translateY(0)' },
+          "0%": { transform: "translateY(-100%)" }, // Fixed typo: 'transforM' => 'transform'
+          "100%": { transform: "translateY(0)" },
         },
         "slide-out": {
           "0%": { transform: "translateY(0)" },
@@ -23,9 +36,9 @@ module.exports = {
         },
       },
       animation: {
-        fade1: 'fadeIn 1s ease-in-out',
-        fade2: 'fadeIn 2s ease-in-out',
-        'slide-in': 'slideIn 0.5s ease-out forwards',
+        fade1: "fadeIn 1s ease-in-out",
+        fade2: "fadeIn 2s ease-in-out",
+        "slide-in": "slideIn 0.5s ease-out forwards",
         "slide-out": "slide-out 0.5s ease-in forwards",
       },
     },
