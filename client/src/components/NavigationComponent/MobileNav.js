@@ -12,7 +12,7 @@ const MobileNav = () => {
   const location = useLocation();
 
   return (
-    <div className="sticky bottom-0 bg-white w-full h-[100px] flex flex-row items-center justify-evenly border pb-8 text-neutral-500 text-[10px] font-sans tracking-tighter text-center">
+    <div className="fixed bottom-0 bg-white w-full h-[100px] flex flex-row items-center justify-evenly border pb-8 text-neutral-500 text-[10px] font-sans tracking-tighter text-center">
       <div className="flex flex-col items-center justify-center hover:scale-95 transition">
         <button onClick={() => navigate("/dashboard")}>
           <DashboardRoundedIcon

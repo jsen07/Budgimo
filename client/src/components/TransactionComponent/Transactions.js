@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useQuery } from "@apollo/client";
+import auth from "../../utils/auth/auth";
 import TransactionList from "./subcomponents/TransactionList";
 import MobileNav from "../NavigationComponent/MobileNav";
 import AddBoxRoundedIcon from "@mui/icons-material/AddBoxRounded";
@@ -7,26 +9,37 @@ import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import { getAllExpensesByUser } from "../../utils/queries/queries";
 
 const Transactions = () => {
   // let date = Date.now();
   const navigate = useNavigate();
   const [transactions, setTransactions] = useState();
+  const [user, setUser] = useState(null);
   const [addTransactionToggle, setAddTransactionToggle] = useState(false);
-
-  const getTransactionData = (transactions) => {
-    setTransactions(transactions);
-  };
+  const { data, loading, error } = useQuery(getAllExpensesByUser, {
+    skip: !user,
+    variables: {
+      userId: user ? user.data._id : "",
+      limit: null,
+      orderBy: "date_DESC",
+    },
+  });
 
   useEffect(() => {
-    if (transactions) {
-      console.log(transactions);
+    setUser(auth.getProfile());
+  }, []);
+
+  useEffect(() => {
+    if (data) {
+      console.log(data);
+      setTransactions(data.getAllExpensesByUser);
     }
-  }, [transactions]);
+  }, [data]);
 
   return (
-    <div className="flex flex-col font-sans items-center pt-4">
-      <div className="sticky top-0 w-full flex flex-col pt-4 bg-white">
+    <div className="flex flex-col font-sans items-center pb-[100px]">
+      <div className="sticky top-0 w-full flex flex-col pt-8 bg-white">
         <div className="flex flex-row justify-between items-center text-2xl px-2 relative">
           <ArrowBackIosRoundedIcon onClick={() => navigate("/dashboard")} />
           <h1 className="font-semibold tracking-wide absolute left-1/2 -translate-x-1/2">
@@ -61,7 +74,9 @@ const Transactions = () => {
         <div className="w-full px-1 flex flex-col">
           <TransactionList
             limit={null}
-            getTransactionData={getTransactionData}
+            transactionData={transactions}
+            loading={loading}
+            error={error}
           />
         </div>
       </div>

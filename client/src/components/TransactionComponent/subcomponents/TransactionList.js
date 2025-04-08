@@ -1,40 +1,19 @@
-import React, { useEffect, useState } from "react";
-import { useQuery } from "@apollo/client";
-import auth from "../../../utils/auth/auth";
-import { getAllExpensesByUser } from "../../../../src/utils/queries/queries";
+import React from "react";
 import FastfoodRoundedIcon from "@mui/icons-material/FastfoodRounded";
 import { getRandomColor } from "../../../utils/helperFunctions";
 import clsx from "clsx";
 import TransactionSkeleton from "../../Loaders/TransactionSkeleton";
 import useDelayedLoading from "../../../hooks/DelayedLoading";
 
-const TransactionList = ({ limit, getTransactionData }) => {
-  const [user, setUser] = useState(null);
-
-  // Fetch expenses when user is ready
-  const { data, loading, error } = useQuery(getAllExpensesByUser, {
-    skip: !user,
-    variables: {
-      userId: user ? user.data._id : "",
-      limit: limit,
-      orderBy: "date_DESC",
-    },
-  });
-
-  useEffect(() => {
-    setUser(auth.getProfile());
-  }, []);
-
-  useEffect(() => {
-    if (data && getTransactionData) {
-      getTransactionData(data.getAllExpensesByUser);
-    }
-  }, [data, getTransactionData]);
-
+const TransactionList = ({ limit, transactionData, loading, error }) => {
   const showLoading = useDelayedLoading(loading, 1000);
+
+  const transactionsToShow = limit
+    ? transactionData?.slice(0, limit)
+    : transactionData;
+
   return (
     <>
-      {/* Loading and Error Handling */}
       {showLoading && (
         <>
           <TransactionSkeleton />
@@ -44,9 +23,9 @@ const TransactionList = ({ limit, getTransactionData }) => {
       )}
       {error && <p>Error loading transactions: {error.message}</p>}
 
-      {data?.getAllExpensesByUser?.length > 0 ? (
+      {transactionsToShow?.length > 0 ? (
         <div>
-          {data.getAllExpensesByUser.map((expense) => {
+          {transactionsToShow?.map((expense) => {
             const randomColor = getRandomColor();
             // const date = formatDateShort(expense.date);
 

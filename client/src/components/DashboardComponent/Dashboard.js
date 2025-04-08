@@ -1,18 +1,46 @@
 import React, { useEffect, useState } from "react";
 import auth from "../../utils/auth/auth";
+import { useQuery } from "@apollo/client";
 import MobileNav from "../NavigationComponent/MobileNav";
 import Avatar from "@mui/material/Avatar";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import SwapHorizRoundedIcon from "@mui/icons-material/SwapHorizRounded";
 import AccountBalanceWalletRoundedIcon from "@mui/icons-material/AccountBalanceWalletRounded";
 import TransactionList from "../TransactionComponent/subcomponents/TransactionList";
-import { calculatePercentage } from "../../utils/helperFunctions";
-
+import {
+  calculatePercentage,
+  formatDateToString,
+} from "../../utils/helperFunctions";
+import { getClosestMonth } from "../../utils/queries/queries";
+import FsLoading from "../Loaders/FsLoading";
 const Dashboard = () => {
   const [firstName, setFirstName] = useState("");
   const [LastName, setLastName] = useState("");
-  const limit = 3;
-  let percentage = calculatePercentage(2000, 334);
+  const [user, setUser] = useState(null);
+  const [month, setMonth] = useState(null);
+  const [percentage, setPercentage] = useState();
+  const { data, loading, error } = useQuery(getClosestMonth, {
+    skip: !user,
+    variables: {
+      userId: user ? user.data._id : "",
+    },
+  });
+
+  useEffect(() => {
+    setUser(auth.getProfile());
+  }, []);
+
+  useEffect(() => {
+    if (data && data.getClosestMonth !== null) {
+      setMonth(data.getClosestMonth);
+      setPercentage(
+        calculatePercentage(
+          data.getClosestMonth.budget,
+          data.getClosestMonth.balance
+        )
+      );
+    }
+  }, [data]);
 
   useEffect(() => {
     const user = auth.getProfile();
@@ -29,6 +57,7 @@ const Dashboard = () => {
     };
   }, []);
 
+  if (loading) return <FsLoading />;
   return (
     <div className="w-full max-h-screen">
       <div className="w-full h-auto sticky top-0  bg-white flex flex-row py-4 px-6 justify-between items-center z-10">
@@ -42,7 +71,11 @@ const Dashboard = () => {
 
       <div className="w-full p-4 flex flex-col font-sans pb-[100px] h-[calc(100vh-100px)] overflow-y-auto">
         <div className="flex flex-row justify-between items-center border-b-2 p-3 mb-4">
-          <h1 className="text-2xl text-teal-800">April 2025</h1>
+          <h1 className="text-2xl text-teal-800">
+            {month && month.month
+              ? formatDateToString(month.month)
+              : "Invalid Date"}
+          </h1>
           <h1 className="text-xs text-teal-800">
             Change month <SwapHorizRoundedIcon />
           </h1>
@@ -54,13 +87,15 @@ const Dashboard = () => {
               <AccountBalanceWalletRoundedIcon className="text-teal-500 mr-1" />
               Total Balance
             </h1>
-            <h1>Budget: £2000</h1>
+            <h1>Budget: £{month?.budget || 0}</h1>
           </div>
-          <h1 className="text-5xl font-semibold text-black">£1666</h1>
+          <h1 className="text-5xl font-semibold text-black">
+            £{month?.balance}
+          </h1>
 
           <div class="text-xs flex flex-row w-full justify-between">
-            <h1>£334.00</h1>
-            <h1> £2000.00 </h1>
+            <h1>£{month?.balance || 0}</h1>
+            <h1> £{month?.budget || 0}</h1>
           </div>
           <div className="w-full bg-gray-500 rounded-full h-2.5 mb-4">
             <div
@@ -89,7 +124,12 @@ const Dashboard = () => {
 
         {/* TRANSACTIONS LIST */}
         <div className="flex flex-col w-full py-4 mb-2">
-          <TransactionList limit={limit} />
+          <TransactionList
+            limit={3}
+            transactionData={month?.expenses || null}
+            loading={loading}
+            error={error}
+          />
         </div>
 
         {/* UPCOMING PAYMENTS */}

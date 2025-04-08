@@ -72,7 +72,7 @@ export const addMonth = gql`
 export const addExpense = gql`
   mutation addExpense(
     $name: String!
-    $amount: Float!
+    $amount: String!
     $date: String!
     $categoryId: ID!
     $userId: ID!

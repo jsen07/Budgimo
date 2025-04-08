@@ -7,8 +7,11 @@ const expenseSchema = new Schema({
     required: true,
   },
   amount: {
-    type: Number,
+    type: String,
     required: true,
+    set: function (value) {
+      return parseFloat(value).toFixed(2);
+    },
   },
   date: {
     type: String,

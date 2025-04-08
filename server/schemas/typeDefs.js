@@ -21,7 +21,7 @@ const typeDefs = gql`
   type Expense {
     id: ID!
     name: String!
-    amount: Float!
+    amount: String!
     date: String!
     category: Category!
     user: User!
@@ -85,7 +85,7 @@ const typeDefs = gql`
     deleteCategory(id: ID!): DeleteCategoryResponse!
     addExpense(
       name: String!
-      amount: Float!
+      amount: String!
       date: String!
       categoryId: ID!
       userId: ID!
