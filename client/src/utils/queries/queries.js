@@ -69,3 +69,14 @@ export const getExpensesByMonth = gql`
     }
   }
 `;
+
+export const getClosestMonth = gql`
+  query getClosestMonth($userId: ID!) {
+    getClosestMonth(userId: $userId) {
+      id
+      month
+      budget
+      balance
+    }
+  }
+`;
