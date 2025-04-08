@@ -47,7 +47,7 @@ const Transactions = () => {
             Transactions{" "}
           </h1>
           <div
-            className="flex flex-row gap-2
+            className="flex flex-row gap-2 text-teal-600
           "
           >
             <EditRoundedIcon style={{ fontSize: "32px" }} />
@@ -77,6 +77,7 @@ const Transactions = () => {
             transactionData={transactions}
             loading={loading}
             error={error}
+            sort={true}
           />
         </div>
       </div>

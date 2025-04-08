@@ -129,6 +129,7 @@ const Dashboard = () => {
             transactionData={month?.expenses || null}
             loading={loading}
             error={error}
+            sort={false}
           />
         </div>
 
