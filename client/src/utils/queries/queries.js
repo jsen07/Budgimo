@@ -77,6 +77,15 @@ export const getClosestMonth = gql`
       month
       budget
       balance
+      expenses {
+        id
+        name
+        amount
+        date
+        category {
+          name
+        }
+      }
     }
   }
 `;

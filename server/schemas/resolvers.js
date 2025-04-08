@@ -108,7 +108,14 @@ const resolvers = {
         const user = await User.findById(userId);
         if (!user) return null;
 
-        const months = await Month.find({ userId });
+        const months = await Month.find({ userId }).populate({
+          path: "expenses",
+          populate: {
+            path: "category",
+            model: "Category",
+          },
+        });
+
         if (months.length === 0) return null;
 
         const today = new Date();
@@ -121,7 +128,6 @@ const resolvers = {
         for (const month of months) {
           const [mm, yyyy] = month.month.split("-");
           const monthYear = Number(yyyy) * 12 + Number(mm);
-
           const currentDate = currentYear * 12 + currentMonth;
           const diff = Math.abs(monthYear - currentDate);
 
@@ -131,9 +137,7 @@ const resolvers = {
           }
         }
 
-        if (!closestMonth) {
-          return null;
-        }
+        if (!closestMonth) return null;
 
         const [mm, yyyy] = closestMonth.month.split("-");
         const formattedMonth = `${String(mm).padStart(2, "0")}-${yyyy}`;
@@ -143,6 +147,7 @@ const resolvers = {
           month: formattedMonth,
           budget: closestMonth.budget,
           balance: closestMonth.balance,
+          expenses: closestMonth.expenses,
         };
       } catch (error) {
         console.error(error);
