@@ -42,14 +42,19 @@ const TransactionList = ({ limit, transactionData, loading, error }) => {
                     className={clsx(`text-${randomColor}`)}
                   />
                   <h1 className="font-semibold ml-2">{expense.name}</h1>
-                  {/* <h1>{date}</h1> */}
+                  {/* <h1>{expense.date}</h1> */}
                 </div>
                 <div className="flex flex-col">
                   <p className="font-thin text-sm text-neutral-500">
                     {expense.category.name}
                   </p>
-                  <p className="font-semibold text-red-600">
-                    - {expense.amount}
+                  <p
+                    className={`font-semibold ${
+                      expense.moneyOut ? "text-red-600" : "text-green-600"
+                    } `}
+                  >
+                    {expense.moneyOut ? "-" : "+"}
+                    {expense.amount}
                   </p>
                 </div>
               </div>

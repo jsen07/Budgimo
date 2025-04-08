@@ -13,6 +13,10 @@ const expenseSchema = new Schema({
       return parseFloat(value).toFixed(2);
     },
   },
+  moneyOut: {
+    type: Boolean,
+    default: true,
+  },
   date: {
     type: String,
     required: true,
