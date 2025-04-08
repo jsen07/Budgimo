@@ -12,7 +12,7 @@ const typeDefs = gql`
   type Month {
     id: ID!
     month: String!
-    budget: Float!
+    budget: String!
     user: User!
     balance: Float!
     expenses: [Expense!]!
@@ -22,6 +22,7 @@ const typeDefs = gql`
     id: ID!
     name: String!
     amount: String!
+    moneyOut: Boolean!
     date: String!
     category: Category!
     user: User!
@@ -79,13 +80,14 @@ const typeDefs = gql`
     login(email: String!, password: String!): Auth
     register(userData: UserInput!, password: String!): Auth
     updateUser(id: ID!, userData: UserInput!): User
-    addMonth(month: String!, budget: Float!, userId: ID!): Month!
+    addMonth(month: String!, budget: String!, userId: ID!): Month!
     addCategory(name: String!, isCustom: Boolean!, userId: ID!): Category!
     editCategory(id: ID!, name: String!): Category
     deleteCategory(id: ID!): DeleteCategoryResponse!
     addExpense(
       name: String!
       amount: String!
+      moneyOut: Boolean!
       date: String!
       categoryId: ID!
       userId: ID!

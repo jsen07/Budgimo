@@ -268,7 +268,7 @@ const resolvers = {
 
     addExpense: async (
       parent,
-      { name, amount, date, categoryId, userId, monthId },
+      { name, amount, date, moneyOut, categoryId, userId, monthId },
       context
     ) => {
       try {
@@ -287,9 +287,28 @@ const resolvers = {
           throw new ApolloError("Month not found", "MONTH_NOT_FOUND");
         }
 
+        let parseAmount = parseFloat(amount);
+
+        const updatedMonth = await Month.findByIdAndUpdate(
+          monthId,
+          {
+            $inc: {
+              balance: moneyOut
+                ? -parseFloat(parseAmount.toFixed(2))
+                : +parseFloat(parseAmount.toFixed(2)),
+            },
+          },
+          { new: true }
+        );
+
+        if (!updatedMonth) {
+          throw new ApolloError("Month not found", "MONTH_NOT_FOUND");
+        }
+
         const expense = new Expense({
           name,
           amount,
+          moneyOut,
           date,
           categoryId,
           userId,

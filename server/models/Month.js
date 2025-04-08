@@ -15,8 +15,11 @@ const monthSchema = new Schema(
       },
     },
     budget: {
-      type: Number,
+      type: String,
       required: true,
+      set: function (value) {
+        return parseFloat(value).toFixed(2);
+      },
     },
     userId: {
       type: Schema.Types.ObjectId,
@@ -27,6 +30,12 @@ const monthSchema = new Schema(
     balance: {
       type: Number,
       required: true,
+      set: function (value) {
+        return parseFloat(value);
+      },
+      get: function (value) {
+        return parseFloat(value.toFixed(2));
+      },
     },
   },
   {
