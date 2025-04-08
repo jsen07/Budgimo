@@ -102,6 +102,53 @@ const resolvers = {
         throw new Error("Failed to fetch expenses by month.");
       }
     },
+
+    getClosestMonth: async (_, { userId }) => {
+      try {
+        const user = await User.findById(userId);
+        if (!user) return null;
+
+        const months = await Month.find({ userId });
+        if (months.length === 0) return null;
+
+        const today = new Date();
+        const currentYear = today.getFullYear();
+        const currentMonth = today.getMonth() + 1;
+
+        let closestMonth = null;
+        let closestDiff = Infinity;
+
+        for (const month of months) {
+          const [mm, yyyy] = month.month.split("-");
+          const monthYear = Number(yyyy) * 12 + Number(mm);
+
+          const currentDate = currentYear * 12 + currentMonth;
+          const diff = Math.abs(monthYear - currentDate);
+
+          if (diff < closestDiff) {
+            closestDiff = diff;
+            closestMonth = month;
+          }
+        }
+
+        if (!closestMonth) {
+          return null;
+        }
+
+        const [mm, yyyy] = closestMonth.month.split("-");
+        const formattedMonth = `${String(mm).padStart(2, "0")}-${yyyy}`;
+
+        return {
+          id: closestMonth._id.toString(),
+          month: formattedMonth,
+          budget: closestMonth.budget,
+          balance: closestMonth.balance,
+        };
+      } catch (error) {
+        console.error(error);
+        return null;
+      }
+    },
   },
   Mutation: {
     login: async (parent, { email, password }, context) => {

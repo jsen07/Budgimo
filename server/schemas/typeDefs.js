@@ -71,6 +71,7 @@ const typeDefs = gql`
     getExpensesByCategory(categoryId: ID!): [Expense!]
     getMonthsByUser(userId: ID!): [Month!]!
     getExpensesByMonth(monthId: ID!): [Expense!]!
+    getClosestMonth(userId: ID!): Month
   }
 
   # Mutations
