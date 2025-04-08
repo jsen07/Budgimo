@@ -1,5 +1,5 @@
 const { AuthenticationError, ApolloError } = require("apollo-server-express");
-const { User, Expense, Category } = require("../models");
+const { User, Expense, Category, Month } = require("../models");
 const { signToken } = require("../utils/auth");
 
 const resolvers = {
@@ -48,33 +48,58 @@ const resolvers = {
       context
     ) => {
       try {
-        // Check if the user exists
         const user = await User.findById(userId);
         if (!user) {
           throw new AuthenticationError("User not found");
         }
 
-        // Set sorting options based on the `orderBy` argument
         const sortOptions =
-          orderBy === "date_DESC" ? { date: -1 } : { date: 1 }; // Default to ascending if no "date_DESC"
+          orderBy === "date_DESC" ? { date: -1 } : { date: 1 };
 
-        // If a limit is passed, apply it, otherwise, return all expenses
         const expensesQuery = Expense.find({ userId })
           .populate("category")
-          .sort(sortOptions); // Sorting by date
+          .sort(sortOptions);
 
-        // Apply limit if provided
         if (limit) {
-          expensesQuery.limit(limit); // Limit the number of results if a limit is specified
+          expensesQuery.limit(limit);
         }
-
-        // Fetch expenses from the database
         const allExpenses = await expensesQuery;
 
         return allExpenses;
       } catch (error) {
         console.error(error);
         throw new Error("Failed to fetch expenses by user.");
+      }
+    },
+
+    getAllCategoriesByUser: async (parent, { userId }, context) => {
+      try {
+        const categoryQuery = Category.find({ userId });
+
+        return categoryQuery;
+      } catch (error) {
+        throw new Error("Failed to fetch expenses by user.");
+      }
+    },
+
+    getMonthsByUser: async (parent, { userId }, context) => {
+      try {
+        const getMonthsQuery = Month.find({ userId });
+
+        return getMonthsQuery;
+      } catch (error) {
+        throw new Error("Failed to fetch months by user.");
+      }
+    },
+
+    getExpensesByMonth: async (parent, { monthId }, context) => {
+      try {
+        const expenses = await Expense.find({ monthId }).populate("category");
+
+        return expenses;
+      } catch (err) {
+        console.error("Error fetching expenses by month:", err);
+        throw new Error("Failed to fetch expenses by month.");
       }
     },
   },
@@ -166,13 +191,36 @@ const resolvers = {
       throw new AuthenticationError("You must be logged in!");
     },
 
+    addMonth: async (parent, { month, budget, userId }) => {
+      try {
+        const user = await User.findById(userId);
+        if (!user) throw new Error("User not found");
+
+        const monthRegex = /^(0[1-9]|1[0-2])-\d{4}$/;
+        if (!monthRegex.test(month)) {
+          throw new Error("Invalid month format. Please use MM-YYYY.");
+        }
+
+        const existingMonth = await Month.findOne({ user: userId, month });
+        if (existingMonth) {
+          throw new Error("This month already exists for the user.");
+        }
+
+        const newMonth = new Month({ month, budget, userId, balance: budget });
+        await newMonth.save();
+
+        return newMonth;
+      } catch (error) {
+        throw new Error(error.message);
+      }
+    },
+
     addExpense: async (
       parent,
-      { name, amount, date, categoryId, userId },
+      { name, amount, date, categoryId, userId, monthId },
       context
     ) => {
       try {
-        // Check if the user exists and category exists
         const user = await User.findById(userId);
         if (!user) {
           throw new AuthenticationError("User not found");
@@ -180,33 +228,37 @@ const resolvers = {
 
         const category = await Category.findById(categoryId);
         if (!category) {
-          throw new ApolloError("Category not found");
+          throw new ApolloError("Category not found", "CATEGORY_NOT_FOUND");
         }
 
-        const formatDate = new Date(date);
-        const yearMonth =
-          formatDate.getFullYear() +
-          "-" +
-          (formatDate.getMonth() + 1).toString().padStart(2, "0");
+        const month = await Month.findById(monthId);
+        if (!month) {
+          throw new ApolloError("Month not found", "MONTH_NOT_FOUND");
+        }
 
         const expense = new Expense({
           name,
           amount,
-          date: formatDate,
+          date,
           categoryId,
           userId,
-          month: yearMonth,
+          monthId,
         });
 
         const savedExpense = await expense.save();
+        if (!savedExpense) {
+          throw new ApolloError("Failed to save expense", "SAVE_FAILED");
+        }
 
         const populatedExpense = await Expense.findById(savedExpense._id)
           .populate("category")
-          .populate("user");
+          .populate("user")
+          .populate("month");
 
         return populatedExpense;
       } catch (error) {
-        throw new ApolloError("Failed to add expense");
+        console.error("Error in addExpense mutation:", error);
+        throw new ApolloError("Failed to add expense", "ADD_EXPENSE_FAILED");
       }
     },
 

@@ -9,6 +9,15 @@ const typeDefs = gql`
     created_at: String
   }
 
+  type Month {
+    id: ID!
+    month: String!
+    budget: Float!
+    user: User!
+    balance: Float!
+    expenses: [Expense!]!
+  }
+
   type Expense {
     id: ID!
     name: String!
@@ -16,7 +25,7 @@ const typeDefs = gql`
     date: String!
     category: Category!
     user: User!
-    month: String!
+    month: Month!
   }
 
   type Category {
@@ -58,7 +67,10 @@ const typeDefs = gql`
     getUserProfile(userId: ID!): User
     getCategories(userId: ID!): [Category!]!
     getAllExpensesByUser(userId: ID!, limit: Int, orderBy: String): [Expense!]!
+    getAllCategoriesByUser(userId: ID!): [Category!]!
     getExpensesByCategory(categoryId: ID!): [Expense!]
+    getMonthsByUser(userId: ID!): [Month!]!
+    getExpensesByMonth(monthId: ID!): [Expense!]!
   }
 
   # Mutations
@@ -66,6 +78,7 @@ const typeDefs = gql`
     login(email: String!, password: String!): Auth
     register(userData: UserInput!, password: String!): Auth
     updateUser(id: ID!, userData: UserInput!): User
+    addMonth(month: String!, budget: Float!, userId: ID!): Month!
     addCategory(name: String!, isCustom: Boolean!, userId: ID!): Category!
     editCategory(id: ID!, name: String!): Category
     deleteCategory(id: ID!): DeleteCategoryResponse!
@@ -75,6 +88,7 @@ const typeDefs = gql`
       date: String!
       categoryId: ID!
       userId: ID!
+      monthId: ID!
     ): Expense!
     editExpense(id: ID!, userData: ExpenseInput!): Expense
     deleteExpense(id: ID!): Expense

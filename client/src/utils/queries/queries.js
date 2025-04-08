@@ -7,7 +7,6 @@ export const getExpensesByCategory = gql`
       name
       amount
       date
-      month
       category {
         id
         name
@@ -17,7 +16,6 @@ export const getExpensesByCategory = gql`
         first_name
         last_name
       }
-      month
     }
   }
 `;
@@ -29,7 +27,41 @@ export const getAllExpensesByUser = gql`
       name
       amount
       date
+      category {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export const getAllCategoriesByUser = gql`
+  query getAllCategoriesByUser($userId: ID!) {
+    getAllCategoriesByUser(userId: $userId) {
+      id
+      name
+    }
+  }
+`;
+
+export const getMonthsByUser = gql`
+  query getMonthsByUser($userId: ID!) {
+    getMonthsByUser(userId: $userId) {
+      id
       month
+      budget
+      balance
+    }
+  }
+`;
+
+export const getExpensesByMonth = gql`
+  query getExpensesByMonth($monthId: ID!) {
+    getExpensesByMonth(monthId: $monthId) {
+      id
+      name
+      amount
+      date
       category {
         id
         name
