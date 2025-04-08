@@ -18,9 +18,51 @@ export const formatDateShort = (timestamp) => {
   });
 };
 
+export const formatDateTransactions = (date) => {
+  const parsedDate = new Date(date);
+
+  if (isNaN(parsedDate)) {
+    return "Not valid date";
+  }
+
+  // Format the date as "day month yEAR"
+  return parsedDate.toLocaleDateString("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+};
+
+export const getDateDifferenceInMilliseconds = (dateStr) => {
+  const currentDate = new Date();
+  const transactionDate = new Date(dateStr);
+  return Math.abs(currentDate - transactionDate);
+};
+
+// Function to group transactions by formatted date
+export const groupTransactionsByDate = (transactions, formatDateFunction) => {
+  return transactions.reduce((acc, transaction) => {
+    const formattedDate = formatDateFunction(transaction.date);
+    if (!acc[formattedDate]) {
+      acc[formattedDate] = [];
+    }
+    acc[formattedDate].push(transaction);
+    return acc;
+  }, {});
+};
+
+export const sortTransactionsByDate = (transactions) => {
+  const transactionsCopy = [...transactions];
+
+  return transactionsCopy.sort(
+    (a, b) =>
+      getDateDifferenceInMilliseconds(a.date) -
+      getDateDifferenceInMilliseconds(b.date)
+  );
+};
 export const calculatePercentage = (budget, spent) => {
   const percentage_spent = (spent / budget) * 100;
-  return percentage_spent;
+  return percentage_spent.toFixed(2);
 };
 
 export const formatDateToString = (dateString) => {
