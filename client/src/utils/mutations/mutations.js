@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 export const registerMutation = gql`
   mutation Register($userData: UserInput!, $password: String!) {
@@ -51,16 +51,41 @@ export const editCategory = gql`
 export const deleteCategory = gql`
   mutation deleteCategory($id: ID!) {
     deleteCategory(id: $id) {
-    success
-    message
-    deletedCategoryId
+      success
+      message
+      deletedCategoryId
+    }
+  }
+`;
+
+export const addMonth = gql`
+  mutation addMonth($month: String!, $budget: Float!, $userId: ID!) {
+    addMonth(month: $month, budget: $budget, userId: $userId) {
+      id
+      month
+      budget
+      balance
     }
   }
 `;
 
 export const addExpense = gql`
-  mutation addExpense($name: String!, $amount: Float!, $date: String!, $categoryId: ID!, $userId: ID!) {
-    addExpense(name: $name, amount: $amount, date: $date, categoryId: $categoryId, userId: $userId) {
+  mutation addExpense(
+    $name: String!
+    $amount: Float!
+    $date: String!
+    $categoryId: ID!
+    $userId: ID!
+    $monthId: ID!
+  ) {
+    addExpense(
+      name: $name
+      amount: $amount
+      date: $date
+      categoryId: $categoryId
+      userId: $userId
+      monthId: $monthId
+    ) {
       id
       name
       amount
@@ -69,19 +94,32 @@ export const addExpense = gql`
         id
         name
       }
+      user {
+        id
+        first_name
+        last_name
+      }
+      month {
+        id
+        month
+        budget
+        balance
+      }
     }
   }
 `;
 
-
 export const editExpense = gql`
-  mutation editExpense($id: ID!, $userData: ExpenseInput!) {
-    editExpense(id: $id, userData: $userData) {
+  mutation editExpense($id: ID!, $expenseData: ExpenseInput!) {
+    editExpense(id: $id, expenseData: $expenseData) {
       id
       name
       amount
       date
-      month
+      month {
+        id
+        month
+      }
     }
   }
 `;
@@ -93,7 +131,10 @@ export const deleteExpense = gql`
       name
       amount
       date
-      month
+      month {
+        id
+        month
+      }
     }
   }
 `;
