@@ -6,7 +6,6 @@ import TransactionSkeleton from "../../Loaders/TransactionSkeleton";
 import useDelayedLoading from "../../../hooks/DelayedLoading";
 import {
   formatDateTransactions,
-  getDateDifferenceInMilliseconds,
   groupTransactionsByDate,
   sortTransactionsByDate,
 } from "../../../utils/helperFunctions";
