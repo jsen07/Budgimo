@@ -61,13 +61,19 @@ export const getExpensesByMonth = gql`
   query getExpensesByMonth($monthId: ID!) {
     getExpensesByMonth(monthId: $monthId) {
       id
-      name
-      amount
-      moneyOut
-      date
-      category {
+      month
+      budget
+      balance
+      expenses {
         id
         name
+        amount
+        moneyOut
+        date
+        category {
+          id
+          name
+        }
       }
     }
   }

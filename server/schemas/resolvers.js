@@ -94,9 +94,20 @@ const resolvers = {
 
     getExpensesByMonth: async (parent, { monthId }, context) => {
       try {
-        const expenses = await Expense.find({ monthId }).populate("category");
+        const month = await Month.findOne({ _id: monthId }) // Find a single month by ID
+          .populate({
+            path: "expenses",
+            populate: {
+              path: "category",
+              model: "Category",
+            },
+          });
 
-        return expenses;
+        if (!month) {
+          throw new Error("Month not found");
+        }
+
+        return month;
       } catch (err) {
         console.error("Error fetching expenses by month:", err);
         throw new Error("Failed to fetch expenses by month.");

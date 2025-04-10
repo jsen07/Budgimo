@@ -71,7 +71,7 @@ const typeDefs = gql`
     getAllCategoriesByUser(userId: ID!): [Category!]!
     getExpensesByCategory(categoryId: ID!): [Expense!]
     getMonthsByUser(userId: ID!): [Month!]!
-    getExpensesByMonth(monthId: ID!): [Expense!]!
+    getExpensesByMonth(monthId: ID!): Month
     getClosestMonth(userId: ID!): Month
   }
 

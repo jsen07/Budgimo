@@ -3,22 +3,15 @@ import auth from "../../utils/auth/auth";
 import { useQuery } from "@apollo/client";
 import MobileNav from "../NavigationComponent/MobileNav";
 import Avatar from "@mui/material/Avatar";
-import ArrowRightIcon from "@mui/icons-material/ArrowRight";
-import SwapHorizRoundedIcon from "@mui/icons-material/SwapHorizRounded";
-import AccountBalanceWalletRoundedIcon from "@mui/icons-material/AccountBalanceWalletRounded";
-import TransactionList from "../TransactionComponent/subcomponents/TransactionList";
-import {
-  calculatePercentage,
-  formatDateToString,
-} from "../../utils/helperFunctions";
 import { getClosestMonth } from "../../utils/queries/queries";
 import FsLoading from "../Loaders/FsLoading";
+import MonthSummary from "../MonthSummaryComponent/MonthSummary";
+
 const Dashboard = () => {
   const [firstName, setFirstName] = useState("");
   const [LastName, setLastName] = useState("");
   const [user, setUser] = useState(null);
-  const [month, setMonth] = useState(null);
-  const [percentage, setPercentage] = useState();
+  const [monthQuery, setMonthQuery] = useState(); // month id
   const { data, loading, error } = useQuery(getClosestMonth, {
     skip: !user,
     variables: {
@@ -32,13 +25,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (data && data.getClosestMonth !== null) {
-      setMonth(data.getClosestMonth);
-      setPercentage(
-        calculatePercentage(
-          data.getClosestMonth.budget,
-          data.getClosestMonth.balance
-        )
-      );
+      setMonthQuery(data.getClosestMonth.id);
     }
   }, [data]);
 
@@ -49,6 +36,9 @@ const Dashboard = () => {
     setLastName(user.data.last_name.charAt(0).toUpperCase());
   }, []);
 
+  const fetchMonthQuery = (query) => {
+    setMonthQuery(query);
+  };
   useEffect(() => {
     document.body.style.overflow = "hidden";
 
@@ -68,104 +58,14 @@ const Dashboard = () => {
       </div>
 
       {/* Content */}
-
-      <div className="w-full p-4 flex flex-col font-sans pb-[100px] h-[calc(100vh-100px)] overflow-y-auto">
-        <div className="flex flex-row justify-between items-center border-b-2 p-3 mb-4">
-          <h1 className="text-2xl text-teal-800">
-            {month && month.month
-              ? formatDateToString(month.month)
-              : "Invalid Date"}
-          </h1>
-          <h1 className="text-xs text-teal-800">
-            Change month <SwapHorizRoundedIcon />
-          </h1>
-        </div>
-        {/* TOTAL BALANCE */}
-        <div className="flex flex-col w-full p-2 gap-4 mb-4 ">
-          <div className="w-full flex flex-row justify-between text-sm font-normal">
-            <h1>
-              <AccountBalanceWalletRoundedIcon className="text-teal-500 mr-1" />
-              Total Balance
-            </h1>
-            <h1>Budget: £{month?.budget || 0}</h1>
-          </div>
-          <h1 className="text-5xl font-semibold text-black">
-            £{month?.balance}
-          </h1>
-
-          <div class="text-xs flex flex-row w-full justify-between">
-            <h1>£{month?.balance || 0}</h1>
-            <h1> £{month?.budget || 0}</h1>
-          </div>
-          <div className="w-full bg-gray-500 rounded-full h-2.5 mb-4">
-            <div
-              className="bg-teal-500 h-2.5 rounded-full"
-              style={{ width: `${percentage}%` }}
-            ></div>
-            <p className="text-xs font-thinner">{percentage}%</p>
-          </div>
-
-          <div className="flex flex-row text-white w-full font-semibold">
-            <button className="w-1/3 flex items-center justify-center border rounded-xl p-2 bg-black shadow-md">
-              {" "}
-              Deposit{" "}
-            </button>
-          </div>
-        </div>
-
-        {/* TRANSACTIONS */}
-        <div className="flex flex-row justify-between w-full my-2">
-          <h1 className="font-semibold"> Transactions</h1>
-          <h1 className="font-light tracking-tighter text-sm text-gray-600">
-            {" "}
-            See all <ArrowRightIcon className="text-black" />
-          </h1>
-        </div>
-
-        {/* TRANSACTIONS LIST */}
-        <div className="flex flex-col w-full py-4 mb-2">
-          <TransactionList
-            limit={3}
-            transactionData={month?.expenses || null}
-            loading={loading}
-            error={error}
-            sort={false}
-          />
-        </div>
-
-        {/* UPCOMING PAYMENTS */}
-        <div className="flex flex-row justify-between w-full my-2">
-          <h1 className="font-semibold"> Upcoming payments </h1>
-          <h1 className="font-light tracking-tighter text-sm text-gray-600">
-            {" "}
-            See all <ArrowRightIcon className="text-black" />
-          </h1>
-        </div>
-
-        <div className="flex flex-row justify-between items-center border rounded-lg p-3 mb-2 bg-teal-400">
-          <h1 className="font-semibold">Sainsbury's</h1>
-          <div className="flex flex-col">
-            <p className="font-thin text-sm text-neutral-500">Groceries</p>
-            <p className="font-semibold"> - £14.99</p>
-          </div>
-        </div>
-
-        <div className="flex flex-row justify-between items-center border rounded-lg p-3 mb-2 bg-yellow-300">
-          <h1 className="font-semibold">Sainsbury's</h1>
-          <div className="flex flex-col">
-            <p className="font-thin text-sm text-neutral-500">Groceries</p>
-            <p className="font-semibold"> - £14.99</p>
-          </div>
-        </div>
-
-        <div className="flex flex-row justify-between items-center border rounded-lg p-3 mb-2 bg-pink-400">
-          <h1 className="font-semibold">Sainsbury's</h1>
-          <div className="flex flex-col">
-            <p className="font-thin text-sm text-neutral-500">Groceries</p>
-            <p className="font-semibold"> - £14.99</p>
-          </div>
-        </div>
-      </div>
+      {monthQuery ? (
+        <MonthSummary
+          monthQuery={monthQuery}
+          fetchMonthQuery={fetchMonthQuery}
+        />
+      ) : (
+        <div>No data</div>
+      )}
 
       <MobileNav />
     </div>

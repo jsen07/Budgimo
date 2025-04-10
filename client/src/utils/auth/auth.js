@@ -17,7 +17,7 @@ class AuthService {
   // check if user is still logged in
   loggedIn() {
     const token = this.getToken();
-    console.log(token && !this.isTokenExpired(token) ? true : false)
+    // console.log(token && !this.isTokenExpired(token) ? true : false)
     // If there is a token and it's not expired, return `true`
     return token && !this.isTokenExpired(token) ? true : false;
   }
@@ -52,7 +52,7 @@ class AuthService {
     // console.log("login function firing", idToken)
     this.startTokenCheck();
   }
-  
+
   logout() {
     return new Promise((resolve) => {
       localStorage.removeItem("id_token");
@@ -95,4 +95,3 @@ export default authService;
 if (authService.loggedIn()) {
   authService.startTokenCheck();
 }
-
