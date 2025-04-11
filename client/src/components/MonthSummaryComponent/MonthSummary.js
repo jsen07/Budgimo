@@ -44,7 +44,6 @@ const MonthSummary = ({ monthQuery, fetchMonthQuery }) => {
   useEffect(() => {
     if (data && data.getExpensesByMonth !== null) {
       setMonth(data.getExpensesByMonth);
-      console.log(data.getExpensesByMonth);
       setPercentage(
         calculatePercentage(
           data.getExpensesByMonth.budget,
@@ -64,8 +63,8 @@ const MonthSummary = ({ monthQuery, fetchMonthQuery }) => {
 
   if (loading) return <FsLoading />;
   return (
-    <div className="w-full p-4 flex flex-col font-sans pb-[100px] h-[calc(100vh-100px)] overflow-y-auto">
-      <div className="flex flex-row justify-between items-center border-b-2 p-3 mb-4">
+    <div className="w-full px-4 flex flex-col font-sans pb-[100px] h-[calc(100vh-100px)] overflow-y-auto">
+      <div className="flex flex-row justify-between items-center border-b-2 p-3 mb-4 sticky top-0 bg-white">
         <h1 className="text-2xl text-teal-800">
           {month && month.month
             ? formatDateToString(month.month)
@@ -119,7 +118,10 @@ const MonthSummary = ({ monthQuery, fetchMonthQuery }) => {
         <div className="w-full bg-gray-500 rounded-full h-2.5 mb-4">
           <div
             className="bg-teal-500 h-2.5 rounded-full"
-            style={{ width: `${percentage}%` }}
+            style={{
+              width: `${percentage}%`,
+              maxWidth: "100%",
+            }}
           ></div>
           <p className="text-xs font-thinner">{percentage}%</p>
         </div>
@@ -148,7 +150,7 @@ const MonthSummary = ({ monthQuery, fetchMonthQuery }) => {
           transactionData={month?.expenses || null}
           loading={loading}
           error={error}
-          sort={false}
+          sort={true}
         />
       </div>
 
