@@ -58,11 +58,6 @@ const RegisterForm = ({ handleToggle }) => {
       return false;
     }
 
-    if (!password.trim()) {
-      setErr("Password is required");
-      return false;
-    }
-
     return true;
   };
   const handleSubmit = async (e) => {

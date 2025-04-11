@@ -3,12 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "@apollo/client";
 import auth from "../../utils/auth/auth";
 import TransactionList from "./subcomponents/TransactionList";
+import AddTransaction from "./subcomponents/AddTransaction";
 import MobileNav from "../NavigationComponent/MobileNav";
 import AddBoxRoundedIcon from "@mui/icons-material/AddBoxRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import ArrowBackIosRoundedIcon from "@mui/icons-material/ArrowBackIosRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { getAllExpensesByUser } from "../../utils/queries/queries";
 
 const Transactions = () => {
@@ -17,6 +17,7 @@ const Transactions = () => {
   const [transactions, setTransactions] = useState();
   const [user, setUser] = useState(null);
   const [addTransactionToggle, setAddTransactionToggle] = useState(false);
+  const [closing, setClosing] = useState(false);
   const { data, loading, error } = useQuery(getAllExpensesByUser, {
     skip: !user,
     variables: {
@@ -32,10 +33,21 @@ const Transactions = () => {
 
   useEffect(() => {
     if (data) {
-      console.log(data);
       setTransactions(data.getAllExpensesByUser);
     }
   }, [data]);
+
+  const toggleAddTransactionMenu = () => {
+    if (addTransactionToggle) {
+      setClosing(true);
+      setTimeout(() => {
+        setAddTransactionToggle(false);
+        setClosing(false);
+      }, 300);
+    } else {
+      setAddTransactionToggle(true);
+    }
+  };
 
   return (
     <div className="flex flex-col font-sans items-center pb-[100px]">
@@ -47,13 +59,13 @@ const Transactions = () => {
             Transactions{" "}
           </h1>
           <div
-            className="flex flex-row gap-2 text-teal-600
+            className="flex flex-row gap-2 text-teal-600 mr-2
           "
           >
-            <EditRoundedIcon style={{ fontSize: "32px" }} />
+            <EditRoundedIcon style={{ fontSize: "28px" }} />
             <AddBoxRoundedIcon
-              style={{ fontSize: "32px" }}
-              onClick={() => setAddTransactionToggle((prev) => !prev)}
+              style={{ fontSize: "28px" }}
+              onClick={() => toggleAddTransactionMenu()}
             />
           </div>
         </div>
@@ -84,13 +96,15 @@ const Transactions = () => {
 
       {/* ADD TRANSACTION MODAL */}
       {addTransactionToggle && (
-        <div className="absolute bottom-0 h-2/3 w-full border-t-lg rounded-xl bg-white p-4 border-2 flex flex-col">
-          <div className="w-full flex justify-end items center">
-            <CloseRoundedIcon
-              onClick={() => setAddTransactionToggle((prev) => !prev)}
-            />
-          </div>
-
+        <div
+          className={`fixed bottom-0 h-auto pb-[100px] w-full border-t-lg rounded-xl bg-white p-4 border-2 flex flex-col ${
+            closing ? "animate-slide-out-bottom" : "animate-slide-in-bottom"
+          }`}
+        >
+          <AddTransaction
+            toggleAddTransactionMenu={toggleAddTransactionMenu}
+            user={user}
+          />
           <div className="w-full"></div>
         </div>
       )}

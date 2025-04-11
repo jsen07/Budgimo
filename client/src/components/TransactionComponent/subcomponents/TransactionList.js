@@ -15,7 +15,7 @@ const TransactionList = ({ limit, transactionData, loading, error, sort }) => {
 
   const transactionsToShow = Array.isArray(transactionData)
     ? limit
-      ? transactionData.slice(0, limit)
+      ? transactionData.slice(-limit)
       : transactionData
     : [];
 
@@ -48,7 +48,7 @@ const TransactionList = ({ limit, transactionData, loading, error, sort }) => {
       <div>
         {Object.keys(groupedTransactions).map((date) => (
           <div key={date}>
-            <h2 className="font-semibold text-lg my-4">{date}</h2>
+            <h2 className="font-semibold text-md my-4">{date}</h2>
             {groupedTransactions[date].map((expense) => {
               const randomColor = getRandomColor();
               return (

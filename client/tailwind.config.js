@@ -27,12 +27,20 @@ module.exports = {
           "100%": { opacity: 1 },
         },
         slideIn: {
-          "0%": { transform: "translateY(-100%)" }, // Fixed typo: 'transforM' => 'transform'
+          "0%": { transform: "translateY(-100%)" },
+          "100%": { transform: "translateY(0)" },
+        },
+        slideInBottom: {
+          "0%": { transform: "translateY(100%)" },
           "100%": { transform: "translateY(0)" },
         },
         "slide-out": {
           "0%": { transform: "translateY(0)" },
           "100%": { transform: "translateY(-100%)" },
+        },
+        slideOutBottom: {
+          "0%": { transform: "translateY(0)" },
+          "100%": { transform: "translateY(100%)" },
         },
         spin: {
           "0%": { transform: "rotate(0deg)" },
@@ -44,7 +52,9 @@ module.exports = {
         fade1: "fadeIn 1s ease-in-out",
         fade2: "fadeIn 2s ease-in-out",
         "slide-in": "slideIn 0.5s ease-out forwards",
+        "slide-in-bottom": "slideInBottom 0.5s ease-out forwards",
         "slide-out": "slide-out 0.5s ease-in forwards",
+        "slide-out-bottom": "slideOutBottom 0.5s ease-out forwards",
         spin: "spin 2s linear infinite",
       },
     },
