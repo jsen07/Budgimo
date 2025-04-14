@@ -39,13 +39,13 @@ const Dashboard = () => {
   const fetchMonthQuery = (query) => {
     setMonthQuery(query);
   };
-  useEffect(() => {
-    document.body.style.overflow = "hidden";
+  // useEffect(() => {
+  //   document.body.style.overflow = "hidden";
 
-    return () => {
-      document.body.style.overflow = "auto";
-    };
-  }, []);
+  //   return () => {
+  //     document.body.style.overflow = "auto";
+  //   };
+  // }, []);
 
   if (loading) return <FsLoading />;
   return (
@@ -64,7 +64,7 @@ const Dashboard = () => {
           fetchMonthQuery={fetchMonthQuery}
         />
       ) : (
-        <div>No data</div>
+        <div>No data yeeeeeeeeet </div>
       )}
 
       <MobileNav />

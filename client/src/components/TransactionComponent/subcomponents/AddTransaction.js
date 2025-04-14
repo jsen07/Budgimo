@@ -165,7 +165,7 @@ const AddTransaction = ({ toggleAddTransactionMenu, user }) => {
           />
 
           <div className="flex gap-4">
-            <label>
+            <label for="moneyOut">
               <input
                 className="mx-2"
                 type="radio"
@@ -182,11 +182,11 @@ const AddTransaction = ({ toggleAddTransactionMenu, user }) => {
               Out
             </label>
 
-            <label>
+            <label for="moneyOut-in">
               <input
                 className="mx-2"
                 type="radio"
-                name="moneyOut"
+                name="moneyOut-in"
                 value={false}
                 checked={formData.moneyOut === false}
                 onChange={(e) =>

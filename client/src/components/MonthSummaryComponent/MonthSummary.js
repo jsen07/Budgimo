@@ -56,8 +56,6 @@ const MonthSummary = ({ monthQuery, fetchMonthQuery }) => {
   useEffect(() => {
     if (monthsData?.getMonthsByUser) {
       setActiveMonths(monthsData.getMonthsByUser);
-
-      console.log(monthsData.getMonthsByUser);
     }
   }, [monthsData]);
 
@@ -107,7 +105,7 @@ const MonthSummary = ({ monthQuery, fetchMonthQuery }) => {
             <AccountBalanceWalletRoundedIcon className="text-teal-500 mr-1" />
             Total Balance
           </h1>
-          <h1>Budget: £{month?.budget || 0}</h1>
+          <h1>Monthly limit: £{month?.budget || 0}</h1>
         </div>
         <h1 className="text-5xl font-semibold text-black">£{month?.balance}</h1>
 
