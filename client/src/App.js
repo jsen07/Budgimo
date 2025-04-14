@@ -5,12 +5,12 @@ import {
   Routes,
   Route,
   Navigate,
-  useNavigate,
 } from "react-router-dom";
 import LandingPage from "./components/LandingPageComponent/LandingPage";
 import LoginRegisterForm from "./components/LoginRegisterComponent/LoginRegisterForm";
 import Dashboard from "./components/DashboardComponent/Dashboard";
 import Transactions from "./components/TransactionComponent/Transactions";
+import EditTransaction from "./components/EditTransactionComponent/EditTransaction";
 import auth from "./utils/auth/auth";
 import FsLoading from "./components/Loaders/FsLoading";
 
@@ -79,6 +79,13 @@ function App() {
             <Route
               path="/transactions"
               element={isAuthenticated ? <Transactions /> : <Navigate to="/" />}
+            />
+
+            <Route
+              path="/transactions/edit/:transactionId"
+              element={
+                isAuthenticated ? <EditTransaction /> : <Navigate to="/" />
+              }
             />
           </Routes>
         </div>
