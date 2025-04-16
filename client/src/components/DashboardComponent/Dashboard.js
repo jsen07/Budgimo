@@ -39,13 +39,6 @@ const Dashboard = () => {
   const fetchMonthQuery = (query) => {
     setMonthQuery(query);
   };
-  // useEffect(() => {
-  //   document.body.style.overflow = "hidden";
-
-  //   return () => {
-  //     document.body.style.overflow = "auto";
-  //   };
-  // }, []);
 
   if (loading) return <FsLoading />;
   return (
