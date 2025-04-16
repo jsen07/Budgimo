@@ -11,12 +11,13 @@ import LoginRegisterForm from "./components/LoginRegisterComponent/LoginRegister
 import Dashboard from "./components/DashboardComponent/Dashboard";
 import Transactions from "./components/TransactionComponent/Transactions";
 import EditTransaction from "./components/EditTransactionComponent/EditTransaction";
+import Schedule from "./components/ScheduleComponent/Schedule";
 import auth from "./utils/auth/auth";
 import FsLoading from "./components/Loaders/FsLoading";
 
 // Initialize Apollo Client
 const client = new ApolloClient({
-  uri: `http://192.168.1.151:3001/graphql`,
+  uri: `http://localhost:3001/graphql`,
   cache: new InMemoryCache(),
 });
 
@@ -86,6 +87,11 @@ function App() {
               element={
                 isAuthenticated ? <EditTransaction /> : <Navigate to="/" />
               }
+            />
+
+            <Route
+              path="/schedule"
+              element={isAuthenticated ? <Schedule /> : <Navigate to="/" />}
             />
           </Routes>
         </div>

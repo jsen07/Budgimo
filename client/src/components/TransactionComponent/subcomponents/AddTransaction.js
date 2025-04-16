@@ -25,17 +25,14 @@ const AddTransaction = ({ toggleAddTransactionMenu, user }) => {
     monthId: "",
   });
 
-  const { data: monthsData, loading: monthsLoading } = useQuery(
-    getMonthsByUser,
-    {
-      skip: !user,
-      variables: {
-        userId: user ? user.data._id : "",
-      },
-    }
-  );
+  const { data: monthsData } = useQuery(getMonthsByUser, {
+    skip: !user,
+    variables: {
+      userId: user ? user.data._id : "",
+    },
+  });
 
-  const { data, loading, error } = useQuery(getAllCategoriesByUser, {
+  const { data, loading } = useQuery(getAllCategoriesByUser, {
     variables: {
       userId: user.data._id,
     },
@@ -165,7 +162,7 @@ const AddTransaction = ({ toggleAddTransactionMenu, user }) => {
           />
 
           <div className="flex gap-4">
-            <label for="moneyOut">
+            <label htmlFor="moneyOut">
               <input
                 className="mx-2"
                 type="radio"
@@ -181,8 +178,7 @@ const AddTransaction = ({ toggleAddTransactionMenu, user }) => {
               />
               Out
             </label>
-
-            <label for="moneyOut-in">
+            <label htmlFor="moneyOut-in">
               <input
                 className="mx-2"
                 type="radio"

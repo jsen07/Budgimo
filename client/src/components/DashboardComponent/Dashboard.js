@@ -12,7 +12,7 @@ const Dashboard = () => {
   const [LastName, setLastName] = useState("");
   const [user, setUser] = useState(null);
   const [monthQuery, setMonthQuery] = useState(); // month id
-  const { data, loading, error } = useQuery(getClosestMonth, {
+  const { data, loading } = useQuery(getClosestMonth, {
     skip: !user,
     variables: {
       userId: user ? user.data._id : "",
