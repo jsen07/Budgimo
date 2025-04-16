@@ -63,7 +63,7 @@ const TransactionList = ({ limit, transactionData, loading, error, sort }) => {
               : `- £${Math.abs(dateTotal).toFixed(2)}`;
 
           return (
-            <div key={date}>
+            <div key={date} className="shadow-md">
               <h2 className="font-semibold text-md my-4 w-full flex justify-between">
                 {date}{" "}
                 <span

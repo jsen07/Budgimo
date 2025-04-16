@@ -70,7 +70,7 @@ const Transactions = () => {
           </div>
         </div>
 
-        <div className="mt-8 px-2 flex flex-row items-center gap-2">
+        <div className="mt-8 px-2 flex flex-row items-center gap-2 mb-2">
           <input
             className="w-full border h-10 px-4 rounded-lg focus:border"
             placeholder="Search"
