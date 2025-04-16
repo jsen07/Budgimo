@@ -112,6 +112,35 @@ export const addExpense = gql`
   }
 `;
 
+export const addRecurringPayment = gql`
+  mutation addRecurringPayment(
+    $name: String!
+    $amount: String!
+    $date: Int!
+    $frequence: Frequency!
+    $userId: ID!
+  ) {
+    addRecurringPayment(
+      name: $name
+      amount: $amount
+      date: $date
+      frequence: $frequence
+      userId: $userId
+    ) {
+      id
+      name
+      amount
+      date
+      frequence
+      user {
+        id
+        first_name
+        last_name
+      }
+    }
+  }
+`;
+
 export const editExpense = gql`
   mutation editExpense($id: ID!, $expenseData: ExpenseInput!) {
     editExpense(id: $id, expenseData: $expenseData) {

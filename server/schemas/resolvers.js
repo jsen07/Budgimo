@@ -1,5 +1,11 @@
 const { AuthenticationError, ApolloError } = require("apollo-server-express");
-const { User, Expense, Category, Month } = require("../models");
+const {
+  User,
+  Expense,
+  Category,
+  Month,
+  RecurringPayment,
+} = require("../models");
 const { signToken } = require("../utils/auth");
 
 const resolvers = {
@@ -162,6 +168,16 @@ const resolvers = {
         };
       } catch (error) {
         console.error(error);
+      }
+    },
+
+    getAllRecurringPayment: async (parent, { userId }, context) => {
+      try {
+        const recurringPaymentQuery = RecurringPayment.find({ userId });
+
+        return recurringPaymentQuery;
+      } catch (error) {
+        throw new Error("Failed to fetch recurring payments by user.");
       }
     },
   },
@@ -340,6 +356,42 @@ const resolvers = {
       } catch (error) {
         console.error("Error in addExpense mutation:", error);
         throw new ApolloError("Failed to add expense", "ADD_EXPENSE_FAILED");
+      }
+    },
+    addRecurringPayment: async (
+      parent,
+      { name, amount, date, frequence, userId }
+    ) => {
+      try {
+        const user = await User.findById(userId);
+        if (!user) {
+          throw new AuthenticationError("User not found");
+        }
+
+        const recurringPayment = new RecurringPayment({
+          name,
+          amount,
+          date,
+          frequence,
+          userId,
+        });
+
+        const savedRecurringPayment = await recurringPayment.save();
+        if (!savedRecurringPayment) {
+          throw new ApolloError("Failed to save expense", "SAVE_FAILED");
+        }
+
+        const populatedRecurringPayment = await RecurringPayment.findById(
+          savedRecurringPayment._id
+        ).populate("user");
+
+        return populatedRecurringPayment;
+      } catch (error) {
+        console.error("Error in addRecurringPayment mutation:", error);
+        throw new ApolloError(
+          "Failed to add recurring payment",
+          "ADD_RECURRING_PAYMENT_FAILED"
+        );
       }
     },
 

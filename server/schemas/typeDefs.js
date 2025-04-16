@@ -37,6 +37,20 @@ const typeDefs = gql`
     expenses: [Expense!]!
   }
 
+  type RecurringPayment {
+    id: ID!
+    name: String!
+    amount: String!
+    date: Int!
+    frequence: Frequency!
+    user: User!
+  }
+  enum Frequency {
+    Weekly
+    Monthly
+    Annual
+  }
+
   # Authorization type
   type Auth {
     token: ID!
@@ -73,6 +87,7 @@ const typeDefs = gql`
     getMonthsByUser(userId: ID!): [Month!]!
     getExpensesByMonth(monthId: ID!): Month
     getClosestMonth(userId: ID!): Month
+    getAllRecurringPayment(userId: ID!): [RecurringPayment!]
   }
 
   # Mutations
@@ -82,6 +97,13 @@ const typeDefs = gql`
     updateUser(id: ID!, userData: UserInput!): User
     addMonth(month: String!, budget: String!, userId: ID!): Month!
     addCategory(name: String!, isCustom: Boolean!, userId: ID!): Category!
+    addRecurringPayment(
+      name: String!
+      amount: String!
+      date: Int!
+      frequence: Frequency!
+      userId: ID!
+    ): RecurringPayment
     editCategory(id: ID!, name: String!): Category
     deleteCategory(id: ID!): DeleteCategoryResponse!
     addExpense(

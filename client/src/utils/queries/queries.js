@@ -46,6 +46,18 @@ export const getAllCategoriesByUser = gql`
   }
 `;
 
+export const getAllRecurringPayment = gql`
+  query getAllRecurringPayment($userId: ID!) {
+    getAllRecurringPayment(userId: $userId) {
+      id
+      name
+      amount
+      date
+      frequence
+    }
+  }
+`;
+
 export const getMonthsByUser = gql`
   query getMonthsByUser($userId: ID!) {
     getMonthsByUser(userId: $userId) {
