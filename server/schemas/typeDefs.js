@@ -12,6 +12,7 @@ const typeDefs = gql`
   type Month {
     id: ID!
     month: String!
+    currency: String!
     budget: String!
     user: User!
     balance: Float!
@@ -21,6 +22,7 @@ const typeDefs = gql`
   type Expense {
     id: ID!
     name: String!
+    currency: String!
     amount: String!
     moneyOut: Boolean!
     date: String!
@@ -41,7 +43,7 @@ const typeDefs = gql`
     id: ID!
     name: String!
     amount: String!
-    date: Int!
+    date: String!
     frequence: Frequency!
     user: User!
   }
@@ -95,12 +97,17 @@ const typeDefs = gql`
     login(email: String!, password: String!): Auth
     register(userData: UserInput!, password: String!): Auth
     updateUser(id: ID!, userData: UserInput!): User
-    addMonth(month: String!, budget: String!, userId: ID!): Month!
+    addMonth(
+      month: String!
+      currency: String!
+      budget: String!
+      userId: ID!
+    ): Month!
     addCategory(name: String!, isCustom: Boolean!, userId: ID!): Category!
     addRecurringPayment(
       name: String!
       amount: String!
-      date: Int!
+      date: String!
       frequence: Frequency!
       userId: ID!
     ): RecurringPayment
@@ -108,6 +115,7 @@ const typeDefs = gql`
     deleteCategory(id: ID!): DeleteCategoryResponse!
     addExpense(
       name: String!
+      currency: String!
       amount: String!
       moneyOut: Boolean!
       date: String!

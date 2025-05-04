@@ -59,10 +59,21 @@ export const deleteCategory = gql`
 `;
 
 export const addMonth = gql`
-  mutation addMonth($month: String!, $budget: String!, $userId: ID!) {
-    addMonth(month: $month, budget: $budget, userId: $userId) {
+  mutation addMonth(
+    $month: String!
+    $currency: String!
+    $budget: String!
+    $userId: ID!
+  ) {
+    addMonth(
+      month: $month
+      currency: $currency
+      budget: $budget
+      userId: $userId
+    ) {
       id
       month
+      currency
       budget
       balance
     }
@@ -72,6 +83,7 @@ export const addMonth = gql`
 export const addExpense = gql`
   mutation addExpense(
     $name: String!
+    $currency: String!
     $amount: String!
     $moneyOut: Boolean!
     $date: String!
@@ -81,6 +93,7 @@ export const addExpense = gql`
   ) {
     addExpense(
       name: $name
+      currency: $currency
       amount: $amount
       moneyOut: $moneyOut
       date: $date
@@ -90,6 +103,7 @@ export const addExpense = gql`
     ) {
       id
       name
+      currency
       amount
       moneyOut
       date
@@ -105,6 +119,7 @@ export const addExpense = gql`
       month {
         id
         month
+        currency
         budget
         balance
       }
@@ -116,7 +131,7 @@ export const addRecurringPayment = gql`
   mutation addRecurringPayment(
     $name: String!
     $amount: String!
-    $date: Int!
+    $date: String!
     $frequence: Frequency!
     $userId: ID!
   ) {
@@ -146,6 +161,7 @@ export const editExpense = gql`
     editExpense(id: $id, expenseData: $expenseData) {
       id
       name
+      currency
       amount
       moneyOut
       date

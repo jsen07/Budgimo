@@ -14,10 +14,41 @@ const recurringPaymentSchema = new Schema(
       },
     },
     date: {
-      type: Number,
+      type: Schema.Types.Mixed,
       required: true,
-      min: [1, "Choose a day of a month!"],
-      max: [31, "There are only a maximum 31 days in month!"], // DAY OF MONTH
+      validate: {
+        validator: function (value) {
+          const frequence = this.frequence;
+          const weekdays = [
+            "Sunday",
+            "Monday",
+            "Tuesday",
+            "Wednesday",
+            "Thursday",
+            "Friday",
+            "Saturday",
+          ];
+
+          if (frequence === "Weekly") {
+            return typeof value === "string" && weekdays.includes(value);
+          } else if (frequence === "Monthly") {
+            const numericValue = parseInt(value, 10);
+            return (
+              typeof numericValue === "number" &&
+              numericValue >= 1 &&
+              numericValue <= 31
+            );
+          } else if (frequence === "Annual") {
+            // Match MM-DD format
+            const regex =
+              /^(?:(?:01|03|05|07|08|10|12)-(0[1-9]|[12][0-9]|3[01])|(?:04|06|09|11)-(0[1-9]|[12][0-9]|30)|02-(0[1-9]|1[0-9]|2[0-9]))$/;
+            return typeof value === "string" && regex.test(value);
+          }
+
+          return false;
+        },
+        message: "Invalid date format for the selected frequency.",
+      },
     },
     frequence: {
       type: String, // WEEKLY || MONTHLY || ANNUALLY

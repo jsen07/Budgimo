@@ -15,13 +15,9 @@ const Dashboard = () => {
   const { data, loading } = useQuery(getClosestMonth, {
     skip: !user,
     variables: {
-      userId: user ? user.data._id : "",
+      userId: user ? user._id : "",
     },
   });
-
-  useEffect(() => {
-    setUser(auth.getProfile());
-  }, []);
 
   useEffect(() => {
     if (data && data.getClosestMonth !== null) {
@@ -31,6 +27,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const user = auth.getProfile();
+    setUser(user?.data || "");
     setFirstName(user.data.first_name.charAt(0).toUpperCase());
 
     setLastName(user.data.last_name.charAt(0).toUpperCase());
@@ -55,6 +52,7 @@ const Dashboard = () => {
         <MonthSummary
           monthQuery={monthQuery}
           fetchMonthQuery={fetchMonthQuery}
+          user={user}
         />
       ) : (
         <div>No data yeeeeeeeeet </div>

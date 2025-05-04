@@ -14,6 +14,11 @@ const monthSchema = new Schema(
           `${props.value} is not a valid month format (MM-YYYY)!`,
       },
     },
+    currency: {
+      type: String,
+      required: true,
+      default: "GBP",
+    },
     budget: {
       type: String,
       required: true,

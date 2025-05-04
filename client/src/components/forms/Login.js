@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useMutation } from "@apollo/client";
-import { loginMutation } from "../../../utils/mutations/mutations";
-import auth from "../../../utils/auth/auth";
+import { loginMutation } from "../../utils/mutations/mutations";
+import auth from "../../utils/auth/auth";
 import VpnKeyIcon from "@mui/icons-material/VpnKey";
 
 const Login = ({ handleLoginSuccess, handleToggle }) => {

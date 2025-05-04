@@ -33,38 +33,37 @@
     position: fixed;  
     width: 100%;  
   } */
-   /* Customize the overall calendar */
+
 .react-calendar {
   background-color: white;
   width: 100% !important;
   border: none !important;
 }
 
-/* Style the date tiles with rounded corners */
+
 .react-calendar__tile {
-  border-radius: 8px; /* Rounded corners on each day tile */
+  border-radius: 8px; 
   display: flex;
   flex-direction: column;
   align-items: center;
   height: 50px;
 }
 
-/* Highlight the selected date with a teal background */
+
 .react-calendar__tile--active {
-  background-color: #4fd1c5 !important; /* Teal background */
-  color: white !important; /* Ensure the text is white */
-  border-radius: 8px; /* Rounded corners */
-  font-weight: bold; /* Make text stand out */
+  background-color: #4fd1c5 !important;
+  color: white !important; 
+  border-radius: 8px;
+  font-weight: bold;
 }
 
-/* Highlight the hovered tile with a lighter teal */
 .react-calendar__tile:hover {
-  background-color: rgba(79, 209, 197, 0.3); /* Lighter teal for hover */
+  background-color: rgba(79, 209, 197, 0.3); 
   cursor: pointer;
 }
 
-/* Style today's date with a teal border */
-.react-calendar__tile--now { /* Teal border for today */
+
+.react-calendar__tile--now { 
   background-color: rgb(199, 199, 199) !important;
   border-radius: 8px;
 }
@@ -76,9 +75,9 @@
   color: black !important;
 }
 
-/* Navigation button styles */
+
 .react-calendar__navigation button {
-  background-color: #4fd1c5; /* Teal background for navigation buttons */
+  background-color: #4fd1c5; 
   color: black;
   border-radius: 8px;
   padding: 8px;
@@ -86,7 +85,6 @@
   font-size: 1.25rem;
 }
 
-/* Hover effect for navigation buttons */
 .react-calendar__navigation button:hover {
-  background-color: #38b2ac !important; /* Darker teal on hover */
+  background-color: #38b2ac !important; 
 }
