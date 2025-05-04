@@ -5,6 +5,7 @@ export const getExpensesByCategory = gql`
     getExpensesByCategory(categoryId: $categoryId) {
       id
       name
+      currency
       amount
       moneyOut
       date
@@ -26,12 +27,16 @@ export const getAllExpensesByUser = gql`
     getAllExpensesByUser(userId: $userId, limit: $limit, orderBy: $orderBy) {
       id
       name
+      currency
       amount
       moneyOut
       date
       category {
         id
         name
+      }
+      month {
+        currency
       }
     }
   }
@@ -63,6 +68,7 @@ export const getMonthsByUser = gql`
     getMonthsByUser(userId: $userId) {
       id
       month
+      currency
       budget
       balance
     }
@@ -74,11 +80,13 @@ export const getExpensesByMonth = gql`
     getExpensesByMonth(monthId: $monthId) {
       id
       month
+      currency
       budget
       balance
       expenses {
         id
         name
+        currency
         amount
         moneyOut
         date
@@ -96,11 +104,13 @@ export const getClosestMonth = gql`
     getClosestMonth(userId: $userId) {
       id
       month
+      currency
       budget
       balance
       expenses {
         id
         name
+        currency
         amount
         moneyOut
         date

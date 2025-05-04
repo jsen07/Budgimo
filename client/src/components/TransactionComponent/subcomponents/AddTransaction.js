@@ -7,12 +7,15 @@ import {
 } from "../../../utils/queries/queries";
 import { addExpense } from "../../../utils/mutations/mutations";
 import { formatDateToString } from "../../../utils/helperFunctions";
+var cc = require("currency-codes");
 
 const AddTransaction = ({ toggleAddTransactionMenu, user }) => {
+  const currencyCodes = cc.codes();
   const [categories, setCategories] = useState([]);
   const [months, setMonths] = useState([]);
   const [isMonthSelected, setIsMonthSelected] = useState(false);
   const [selectedMonthId, setSelectedMonthId] = useState();
+  const [currency, setCurrency] = useState("GBP");
   const [AddExpense] = useMutation(addExpense);
 
   const [formData, setFormData] = useState({
@@ -46,6 +49,10 @@ const AddTransaction = ({ toggleAddTransactionMenu, user }) => {
       setMonths(monthsData.getMonthsByUser);
     }
   }, [data, monthsData]);
+
+  const handleCurrencyChange = (e) => {
+    setCurrency(e.target.value);
+  };
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -111,6 +118,7 @@ const AddTransaction = ({ toggleAddTransactionMenu, user }) => {
       const { data } = await AddExpense({
         variables: {
           name: formData.description,
+          currency: currency,
           amount: formData.amount,
           moneyOut: formData.moneyOut,
           date: formData.date,
@@ -147,6 +155,22 @@ const AddTransaction = ({ toggleAddTransactionMenu, user }) => {
             className="border p-2 rounded"
             required
           />
+
+          <div className="flex gap-4">
+            <select
+              id="currency"
+              name="currency"
+              value={currency}
+              onChange={handleCurrencyChange}
+              className="w-full border border-gray-300 rounded-xl p-3 focus:outline-none focus:ring-2 focus:ring-teal-600"
+            >
+              {currencyCodes.map((code) => (
+                <option key={code} value={code} className="">
+                  {code}
+                </option>
+              ))}
+            </select>
+          </div>
 
           <input
             type="number"

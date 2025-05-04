@@ -64,6 +64,7 @@ const resolvers = {
 
         const expensesQuery = Expense.find({ userId })
           .populate("category")
+          .populate("month")
           .sort(sortOptions);
 
         if (limit) {
@@ -100,14 +101,13 @@ const resolvers = {
 
     getExpensesByMonth: async (parent, { monthId }, context) => {
       try {
-        const month = await Month.findOne({ _id: monthId }) // Find a single month by ID
-          .populate({
-            path: "expenses",
-            populate: {
-              path: "category",
-              model: "Category",
-            },
-          });
+        const month = await Month.findOne({ _id: monthId }).populate({
+          path: "expenses",
+          populate: {
+            path: "category",
+            model: "Category",
+          },
+        });
 
         if (!month) {
           throw new Error("Month not found");
@@ -162,6 +162,7 @@ const resolvers = {
         return {
           id: closestMonth._id.toString(),
           month: formattedMonth,
+          currency: closestMonth.currency,
           budget: closestMonth.budget,
           balance: closestMonth.balance,
           expenses: closestMonth.expenses,
@@ -269,7 +270,7 @@ const resolvers = {
       throw new AuthenticationError("You must be logged in!");
     },
 
-    addMonth: async (parent, { month, budget, userId }) => {
+    addMonth: async (parent, { month, currency, budget, userId }) => {
       try {
         const user = await User.findById(userId);
         if (!user) throw new Error("User not found");
@@ -284,7 +285,13 @@ const resolvers = {
           throw new Error("This month already exists for the user.");
         }
 
-        const newMonth = new Month({ month, budget, userId, balance: budget });
+        const newMonth = new Month({
+          month,
+          currency,
+          budget,
+          userId,
+          balance: budget,
+        });
         await newMonth.save();
 
         return newMonth;
@@ -295,7 +302,7 @@ const resolvers = {
 
     addExpense: async (
       parent,
-      { name, amount, date, moneyOut, categoryId, userId, monthId },
+      { name, currency, amount, date, moneyOut, categoryId, userId, monthId },
       context
     ) => {
       try {
@@ -314,27 +321,52 @@ const resolvers = {
           throw new ApolloError("Month not found", "MONTH_NOT_FOUND");
         }
 
-        let parseAmount = parseFloat(amount);
+        const parsedAmount = parseFloat(amount);
+        if (isNaN(parsedAmount)) {
+          throw new ApolloError("Invalid amount", "INVALID_AMOUNT");
+        }
+
+        const monthCurrency = month.currency.toLowerCase();
+        const expenseCurrency = currency.toLowerCase();
+
+        let convertedAmount = parsedAmount;
+
+        if (monthCurrency !== expenseCurrency) {
+          const url = `https://cdn.jsdelivr.net/npm/@fawazahmed0/currency-api@latest/v1/currencies/${expenseCurrency}.json`;
+          const response = await fetch(url);
+
+          if (!response.ok) {
+            throw new ApolloError("Currency API fetch failed");
+          }
+
+          const data = await response.json();
+          const rate = data[expenseCurrency][monthCurrency];
+
+          if (!rate) {
+            throw new ApolloError("Conversion rate not available");
+          }
+
+          convertedAmount = parsedAmount * rate;
+        }
+
+        const balanceChange = moneyOut ? -convertedAmount : +convertedAmount;
 
         const updatedMonth = await Month.findByIdAndUpdate(
           monthId,
-          {
-            $inc: {
-              balance: moneyOut
-                ? -parseFloat(parseAmount.toFixed(2))
-                : +parseFloat(parseAmount.toFixed(2)),
-            },
-          },
+          { $inc: { balance: balanceChange } },
           { new: true }
         );
-
         if (!updatedMonth) {
-          throw new ApolloError("Month not found", "MONTH_NOT_FOUND");
+          throw new ApolloError(
+            "Month not found after update",
+            "MONTH_NOT_FOUND"
+          );
         }
 
         const expense = new Expense({
           name,
-          amount,
+          currency,
+          amount: parsedAmount,
           moneyOut,
           date,
           categoryId,
@@ -356,42 +388,6 @@ const resolvers = {
       } catch (error) {
         console.error("Error in addExpense mutation:", error);
         throw new ApolloError("Failed to add expense", "ADD_EXPENSE_FAILED");
-      }
-    },
-    addRecurringPayment: async (
-      parent,
-      { name, amount, date, frequence, userId }
-    ) => {
-      try {
-        const user = await User.findById(userId);
-        if (!user) {
-          throw new AuthenticationError("User not found");
-        }
-
-        const recurringPayment = new RecurringPayment({
-          name,
-          amount,
-          date,
-          frequence,
-          userId,
-        });
-
-        const savedRecurringPayment = await recurringPayment.save();
-        if (!savedRecurringPayment) {
-          throw new ApolloError("Failed to save expense", "SAVE_FAILED");
-        }
-
-        const populatedRecurringPayment = await RecurringPayment.findById(
-          savedRecurringPayment._id
-        ).populate("user");
-
-        return populatedRecurringPayment;
-      } catch (error) {
-        console.error("Error in addRecurringPayment mutation:", error);
-        throw new ApolloError(
-          "Failed to add recurring payment",
-          "ADD_RECURRING_PAYMENT_FAILED"
-        );
       }
     },
 

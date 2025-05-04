@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import auth from "../../utils/auth/auth";
 import { useQuery } from "@apollo/client";
 import FsLoading from "../Loaders/FsLoading";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
@@ -13,14 +12,18 @@ import {
 import {
   getExpensesByMonth,
   getMonthsByUser,
+  getAllRecurringPayment,
 } from "../../utils/queries/queries";
+import RecurringPaymentsList from "../ScheduleComponent/subcomponents/RecurringPaymentsList";
+const getSymbolFromCurrency = require("currency-symbol-map");
 
-const MonthSummary = ({ monthQuery, fetchMonthQuery }) => {
-  const [user, setUser] = useState();
+const MonthSummary = ({ monthQuery, fetchMonthQuery, user }) => {
   const [month, setMonth] = useState(null);
   const [percentage, setPercentage] = useState();
   const [activeMonths, setActiveMonths] = useState([]);
+  const [recurringPayments, setRecurringPayments] = useState([]);
   const [changeMonthActive, setChangeMonthActive] = useState(false);
+  const [exchangeRates, setExchangeRates] = useState(null);
   const { data: monthsData, loading: monthsLoading } = useQuery(
     getMonthsByUser,
     {
@@ -30,16 +33,18 @@ const MonthSummary = ({ monthQuery, fetchMonthQuery }) => {
       },
     }
   );
+  const { data: recurringPaymentData, loading: recurringPaymentLoading } =
+    useQuery(getAllRecurringPayment, {
+      skip: !user,
+      variables: {
+        userId: user ? user._id : "",
+      },
+    });
   const { data, loading, error } = useQuery(getExpensesByMonth, {
     variables: {
       monthId: monthQuery,
     },
   });
-
-  useEffect(() => {
-    const user = auth.getProfile();
-    setUser(user.data);
-  }, []);
 
   useEffect(() => {
     if (data && data.getExpensesByMonth !== null) {
@@ -58,6 +63,12 @@ const MonthSummary = ({ monthQuery, fetchMonthQuery }) => {
       setActiveMonths(monthsData.getMonthsByUser);
     }
   }, [monthsData]);
+
+  useEffect(() => {
+    if (recurringPaymentData?.getAllRecurringPayment) {
+      setRecurringPayments(recurringPaymentData.getAllRecurringPayment);
+    }
+  }, [recurringPaymentData]);
 
   if (loading) return <FsLoading />;
   return (
@@ -78,13 +89,13 @@ const MonthSummary = ({ monthQuery, fetchMonthQuery }) => {
             Change month <SwapHorizRoundedIcon />
           </button>
           {changeMonthActive && (
-            <div className="absolute top-[35px] right-0 rounded-lg border shadow-md animate-quickFade">
+            <div className="absolute top-[35px] right-0 rounded-xl border animate-quickFade shadow-lg px-2 bg-white">
               {activeMonths
                 .filter((currentMonth) => currentMonth.id !== monthQuery)
                 .map((month, key) => (
-                  <div key={key}>
+                  <div key={month.id}>
                     <button
-                      className="w-40 h-12 bg-white flex items-center justify-center text-sm border-b"
+                      className="min-w-32 h-12 flex items-center justify-center text-sm box-content border-b"
                       onClick={() => {
                         fetchMonthQuery(month.id);
                         setChangeMonthActive((prev) => !prev);
@@ -105,13 +116,24 @@ const MonthSummary = ({ monthQuery, fetchMonthQuery }) => {
             <AccountBalanceWalletRoundedIcon className="text-teal-500 mr-1" />
             Total Balance
           </h1>
-          <h1>Monthly limit: £{month?.budget || 0}</h1>
+          <h1>
+            Monthly limit: {getSymbolFromCurrency(month?.currency)}{" "}
+            {month?.budget || 0}
+          </h1>
         </div>
-        <h1 className="text-5xl font-semibold text-black">£{month?.balance}</h1>
+        <h1 className="text-5xl font-semibold text-black">
+          {getSymbolFromCurrency(month?.currency)} {month?.balance}
+        </h1>
 
         <div className="text-xs flex flex-row w-full justify-between">
-          <h1>£{month?.balance || 0}</h1>
-          <h1> £{month?.budget || 0}</h1>
+          <h1>
+            {" "}
+            {getSymbolFromCurrency(month?.currency)} {month?.balance || 0}
+          </h1>
+          <h1>
+            {" "}
+            {getSymbolFromCurrency(month?.currency)} {month?.budget || 0}
+          </h1>
         </div>
         <div className="w-full bg-gray-500 rounded-full h-2.5 mb-4">
           <div
@@ -145,6 +167,7 @@ const MonthSummary = ({ monthQuery, fetchMonthQuery }) => {
       <div className="flex flex-col w-full py-4 mb-2">
         <TransactionList
           limit={3}
+          currency={month?.currency}
           transactionData={month?.expenses || null}
           loading={loading}
           error={error}
@@ -152,7 +175,7 @@ const MonthSummary = ({ monthQuery, fetchMonthQuery }) => {
         />
       </div>
 
-      {/* UPCOMING PAYMENTS */}
+      {/* RECURRING PAYMENTS */}
       <div className="flex flex-row justify-between w-full my-2">
         <h1 className="font-semibold"> Upcoming payments </h1>
         <h1 className="font-light tracking-tighter text-sm text-gray-600">
@@ -160,30 +183,7 @@ const MonthSummary = ({ monthQuery, fetchMonthQuery }) => {
           See all <ArrowRightIcon className="text-black" />
         </h1>
       </div>
-
-      <div className="flex flex-row justify-between items-center border rounded-lg p-3 mb-2 bg-teal-400">
-        <h1 className="font-semibold">Sainsbury's</h1>
-        <div className="flex flex-col">
-          <p className="font-thin text-sm text-neutral-500">Groceries</p>
-          <p className="font-semibold"> - £14.99</p>
-        </div>
-      </div>
-
-      <div className="flex flex-row justify-between items-center border rounded-lg p-3 mb-2 bg-yellow-300">
-        <h1 className="font-semibold">Sainsbury's</h1>
-        <div className="flex flex-col">
-          <p className="font-thin text-sm text-neutral-500">Groceries</p>
-          <p className="font-semibold"> - £14.99</p>
-        </div>
-      </div>
-
-      <div className="flex flex-row justify-between items-center border rounded-lg p-3 mb-2 bg-pink-400">
-        <h1 className="font-semibold">Sainsbury's</h1>
-        <div className="flex flex-col">
-          <p className="font-thin text-sm text-neutral-500">Groceries</p>
-          <p className="font-semibold"> - £14.99</p>
-        </div>
-      </div>
+      <RecurringPaymentsList user={user} />
     </div>
   );
 };

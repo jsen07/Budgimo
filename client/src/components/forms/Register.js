@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useMutation } from "@apollo/client";
-import { registerMutation } from "../../../utils/mutations/mutations";
+import { registerMutation } from "../../utils/mutations/mutations";
 import HowToRegIcon from "@mui/icons-material/HowToReg";
 
 const RegisterForm = ({ handleToggle }) => {
