@@ -393,6 +393,43 @@ const resolvers = {
       }
     },
 
+    addRecurringPayment: async (
+      parent,
+      { name, amount, date, frequence, userId }
+    ) => {
+      try {
+        const user = await User.findById(userId);
+        if (!user) {
+          throw new AuthenticationError("User not found");
+        }
+
+        const recurringPayment = new RecurringPayment({
+          name,
+          amount,
+          date,
+          frequence,
+          userId,
+        });
+
+        const savedRecurringPayment = await recurringPayment.save();
+        if (!savedRecurringPayment) {
+          throw new ApolloError("Failed to save expense", "SAVE_FAILED");
+        }
+
+        const populatedRecurringPayment = await RecurringPayment.findById(
+          savedRecurringPayment._id
+        ).populate("user");
+
+        return populatedRecurringPayment;
+      } catch (error) {
+        console.error("Error in addRecurringPayment mutation:", error);
+        throw new ApolloError(
+          "Failed to add recurring payment",
+          "ADD_RECURRING_PAYMENT_FAILED"
+        );
+      }
+    },
+
     addCategory: async (parent, { name, isCustom, userId }) => {
       try {
         const newCategory = new Category({

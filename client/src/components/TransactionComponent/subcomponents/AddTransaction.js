@@ -78,7 +78,8 @@ const AddTransaction = ({ toggleAddTransactionMenu, user }) => {
     setIsMonthSelected(true);
   };
 
-  const handleAmountBlur = () => {
+  const handleAmountBlur = (e) => {
+    if (e.target.value === "") return;
     setFormData((prev) => ({
       ...prev,
       amount: parseFloat(prev.amount).toFixed(2),
