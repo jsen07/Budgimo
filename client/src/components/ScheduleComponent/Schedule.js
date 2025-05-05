@@ -11,6 +11,7 @@ import { getAllRecurringPayment } from "../../utils/queries/queries";
 import AddIcon from "@mui/icons-material/Add";
 import AddMonthlyBudget from "../forms/AddMonthlyBudget";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
+import RecurringPaymentsList from "./subcomponents/RecurringPaymentsList";
 
 const Schedule = () => {
   const navigate = useNavigate();
@@ -216,7 +217,10 @@ const Schedule = () => {
                 closing ? "animate-slide-out-bottom" : "animate-slide-in-bottom"
               }`}
             >
-              <button className="w-full flex justify-end" onClick={() => toggleAddMonthMenu()}>
+              <button
+                className="w-full flex justify-end"
+                onClick={() => toggleAddMonthMenu()}
+              >
                 {" "}
                 <CloseRoundedIcon />{" "}
               </button>
@@ -230,6 +234,7 @@ const Schedule = () => {
           <h1 className="text-center text-lg font-medium text-gray-600">
             Subscriptions
           </h1>
+          <RecurringPaymentsList user={user} />
         </div>
       )}
 

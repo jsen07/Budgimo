@@ -183,7 +183,7 @@ const MonthSummary = ({ monthQuery, fetchMonthQuery, user }) => {
           See all <ArrowRightIcon className="text-black" />
         </h1>
       </div>
-      <RecurringPaymentsList user={user} />
+      {month && <RecurringPaymentsList user={user} month={month?.month} />}
     </div>
   );
 };
