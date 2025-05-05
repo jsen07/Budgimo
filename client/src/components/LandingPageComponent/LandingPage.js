@@ -96,7 +96,7 @@ const LandingPage = () => {
 
       {menuActive && (
         <div
-          className={`top-0 fixed left-0 bg-stone-100 z-50 w-full h-screen ${
+          className={`top-0 fixed bg-white left-0 z-50 w-full h-screen ${
             closing ? "animate-slide-out" : "animate-slide-in"
           }`}
         >

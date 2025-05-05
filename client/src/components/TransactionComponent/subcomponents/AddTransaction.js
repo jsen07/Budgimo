@@ -95,20 +95,22 @@ const AddTransaction = ({ toggleAddTransactionMenu, user }) => {
   };
 
   const getMonthDateRange = (month) => {
-    const [year, monthNumber] = month.split("-");
-    const firstDay = new Date(year, monthNumber - 1, 1); // first day of the month
-    const lastDay = new Date(year, monthNumber, 0); // last day of the month
+    const [year, monthNumber] = month.split("-").map(Number);
 
+    const firstDay = new Date(year, monthNumber - 1, 1);
+    const lastDay = new Date(year, monthNumber, 0);
     const today = new Date();
+
     const isCurrentMonth =
-      today.getFullYear() === parseInt(year) &&
-      today.getMonth() + 1 === parseInt(monthNumber);
+      today.getFullYear() === year && today.getMonth() + 1 === monthNumber;
+
+    const formatDateLocal = (date) => date.toLocaleDateString("en-CA");
 
     return {
-      minDate: firstDay.toISOString().split("T")[0],
+      minDate: formatDateLocal(firstDay),
       maxDate: isCurrentMonth
-        ? today.toISOString().split("T")[0]
-        : lastDay.toISOString().split("T")[0],
+        ? formatDateLocal(today)
+        : formatDateLocal(lastDay),
     };
   };
 
