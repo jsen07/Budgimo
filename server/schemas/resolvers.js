@@ -81,7 +81,9 @@ const resolvers = {
 
     getAllCategoriesByUser: async (parent, { userId }, context) => {
       try {
-        const categoryQuery = Category.find({ userId });
+        const categoryQuery = await Category.find({
+          $or: [{ isCustom: false }, { userId: userId, isCustom: true }],
+        });
 
         return categoryQuery;
       } catch (error) {

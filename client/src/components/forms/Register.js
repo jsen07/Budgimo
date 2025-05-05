@@ -109,7 +109,7 @@ const RegisterForm = ({ handleToggle }) => {
           <div className="w-1/2 p-1 relative">
             {/* <h2 className='p-1'> First Name</h2> */}
             <label
-              for="first_name"
+              htmlFor="first_name"
               className="absolute top-[0px] left-[10px] bg-white px-2 text-xs"
             >
               {" "}
@@ -126,7 +126,7 @@ const RegisterForm = ({ handleToggle }) => {
           <div className="w-1/2 p-1 relative">
             {/* <h2> Last Name</h2> */}
             <label
-              for="last_name"
+              htmlFor="last_name"
               className="absolute top-[0px] left-[10px] bg-white px-2 text-xs"
             >
               {" "}
@@ -144,7 +144,7 @@ const RegisterForm = ({ handleToggle }) => {
         <div id="row-2" className="flex flex-col w-full p-2 mb-2">
           <div className="w-full p-1 mb-2 relative">
             <label
-              for="email"
+              htmlFor="email"
               className="absolute top-[0px] left-[10px] bg-white px-2 text-xs"
             >
               {" "}
@@ -161,7 +161,7 @@ const RegisterForm = ({ handleToggle }) => {
 
           <div className="w-full p-1 mb-1 relative">
             <label
-              for="password"
+              htmlFor="password"
               className="absolute top-[0px] left-[10px] bg-white px-2 text-xs"
             >
               {" "}
@@ -178,7 +178,7 @@ const RegisterForm = ({ handleToggle }) => {
 
           <div className="w-full p-1 mb-1 relative">
             <label
-              for="Repeat-password"
+              htmlFor="Repeat-password"
               className="absolute top-[0px] left-[10px] bg-white px-2 text-xs"
             >
               Repeat password{" "}

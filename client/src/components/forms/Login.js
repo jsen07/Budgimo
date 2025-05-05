@@ -75,7 +75,7 @@ const Login = ({ handleLoginSuccess, handleToggle }) => {
         <div id="row-2" className="flex flex-col w-full p-2 mb-2">
           <div className="w-full p-1 mb-2 relative">
             <label
-              for="email"
+              htmlFor="email"
               className="absolute top-[0px] left-[10px] bg-white px-2 text-xs"
             >
               E-mail
@@ -90,7 +90,7 @@ const Login = ({ handleLoginSuccess, handleToggle }) => {
           </div>
           <div className="w-full p-1 mb-2 relative">
             <label
-              for="password"
+              htmlFor="password"
               className="absolute top-[0px] left-[10px] bg-white px-2 text-xs"
             >
               Password
