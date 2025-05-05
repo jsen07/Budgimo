@@ -48,7 +48,7 @@ const Dashboard = () => {
       </div>
 
       {/* Content */}
-      {monthQuery ? (
+      {monthQuery && !loading ? (
         <MonthSummary
           monthQuery={monthQuery}
           fetchMonthQuery={fetchMonthQuery}
