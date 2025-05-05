@@ -35,7 +35,7 @@ const typeDefs = gql`
     id: ID!
     name: String!
     isCustom: Boolean!
-    user: User!
+    user: User
     expenses: [Expense!]!
   }
 

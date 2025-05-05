@@ -3,6 +3,7 @@ const { ApolloServer } = require("apollo-server-express");
 const cors = require("cors");
 const path = require("path");
 require("dotenv").config();
+const seedDefaultCategories = require("./config/seed");
 
 const { typeDefs, resolvers } = require("./schemas");
 const db = require("./config/connection");
@@ -42,7 +43,8 @@ const startApolloServer = async () => {
     });
   }
 
-  db.once("open", () => {
+  db.once("open", async () => {
+    await seedDefaultCategories();
     app.listen(PORT, LOCAL_IP, () => {
       console.log(`API server running at http://${LOCAL_IP}:${PORT}`);
       console.log(
