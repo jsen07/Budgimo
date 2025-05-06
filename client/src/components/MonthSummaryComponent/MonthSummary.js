@@ -17,7 +17,12 @@ import {
 import RecurringPaymentsList from "../ScheduleComponent/subcomponents/RecurringPaymentsList";
 const getSymbolFromCurrency = require("currency-symbol-map");
 
-const MonthSummary = ({ monthQuery, fetchMonthQuery, user }) => {
+const MonthSummary = ({
+  monthQuery,
+  fetchMonthQuery,
+  user,
+  setParentLoading,
+}) => {
   const [month, setMonth] = useState(null);
   const [percentage, setPercentage] = useState();
   const [activeMonths, setActiveMonths] = useState([]);
@@ -59,6 +64,12 @@ const MonthSummary = ({ monthQuery, fetchMonthQuery, user }) => {
   }, [data]);
 
   useEffect(() => {
+    const anyLoading = loading || recurringPaymentLoading || monthsLoading;
+    // console.log("Loading:", anyLoading);
+    if (!anyLoading) setParentLoading(false);
+  }, [loading, recurringPaymentLoading, monthsLoading]);
+
+  useEffect(() => {
     if (monthsData?.getMonthsByUser) {
       setActiveMonths(monthsData.getMonthsByUser);
     }
@@ -70,7 +81,7 @@ const MonthSummary = ({ monthQuery, fetchMonthQuery, user }) => {
     }
   }, [recurringPaymentData]);
 
-  if (loading) return <FsLoading />;
+  // if (loading) return <FsLoading />;
   return (
     <div className="w-full px-4 flex flex-col font-sans pb-[100px] h-[calc(100vh-100px)] overflow-y-auto">
       <div className="flex flex-row justify-between items-center border-b-2 p-3 mb-4 sticky top-0 bg-white">
@@ -80,14 +91,17 @@ const MonthSummary = ({ monthQuery, fetchMonthQuery, user }) => {
             : "Invalid Date"}
         </h1>
         <div className="relative">
-          <button
-            className="text-xs text-teal-800"
-            onClick={() => {
-              setChangeMonthActive((prev) => !prev);
-            }}
-          >
-            Change month <SwapHorizRoundedIcon />
-          </button>
+          {activeMonths.length > 1 && (
+            <button
+              className="text-xs text-teal-800"
+              onClick={() => {
+                setChangeMonthActive((prev) => !prev);
+              }}
+            >
+              Change month <SwapHorizRoundedIcon />
+            </button>
+          )}
+
           {changeMonthActive && (
             <div className="absolute top-[35px] right-0 rounded-xl border animate-quickFade shadow-lg px-2 bg-white">
               {activeMonths
@@ -176,13 +190,14 @@ const MonthSummary = ({ monthQuery, fetchMonthQuery, user }) => {
       </div>
 
       {/* RECURRING PAYMENTS */}
-      <div className="flex flex-row justify-between w-full my-2">
-        <h1 className="font-semibold"> Upcoming payments </h1>
-        <h1 className="font-light tracking-tighter text-sm text-gray-600">
-          {" "}
-          See all <ArrowRightIcon className="text-black" />
-        </h1>
-      </div>
+
+      {/* <div className="flex flex-row justify-between w-full my-2">
+            <h1 className="font-semibold"> Upcoming payments </h1>
+            <h1 className="font-light tracking-tighter text-sm text-gray-600">
+              {" "}
+              See all <ArrowRightIcon className="text-black" />
+            </h1>
+          </div> */}
       {month && <RecurringPaymentsList user={user} month={month?.month} />}
     </div>
   );

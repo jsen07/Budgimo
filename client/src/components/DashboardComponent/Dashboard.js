@@ -12,6 +12,7 @@ const Dashboard = () => {
   const [LastName, setLastName] = useState("");
   const [user, setUser] = useState(null);
   const [monthQuery, setMonthQuery] = useState(); // month id
+  const [childLoading, setChildLoading] = useState(false);
   const { data, loading } = useQuery(getClosestMonth, {
     skip: !user,
     variables: {
@@ -37,7 +38,7 @@ const Dashboard = () => {
     setMonthQuery(query);
   };
 
-  if (loading) return <FsLoading />;
+  // if (loading || childLoading) return <FsLoading />;
   return (
     <div className="w-full max-h-screen">
       <div className="w-full h-auto sticky top-0  bg-white flex flex-row py-4 px-6 justify-between items-center z-10">
@@ -48,14 +49,19 @@ const Dashboard = () => {
       </div>
 
       {/* Content */}
-      {monthQuery && !loading ? (
+      {loading || childLoading || !user || !data ? (
+        <FsLoading />
+      ) : monthQuery ? (
         <MonthSummary
           monthQuery={monthQuery}
           fetchMonthQuery={fetchMonthQuery}
           user={user}
+          setParentLoading={setChildLoading}
         />
       ) : (
-        <div>No data yeeeeeeeeet </div>
+        <div className="text-center text-gray-500 mt-4">
+          No monthly data available.
+        </div>
       )}
 
       <MobileNav />

@@ -231,7 +231,7 @@ const Schedule = () => {
             </div>
           )}
 
-          <h1 className="text-center text-lg font-medium text-gray-600">
+          <h1 className="text-lg font-medium text-gray-600 mb-4 border-y-2 w-full py-2 px-1">
             Subscriptions
           </h1>
           <RecurringPaymentsList user={user} />
