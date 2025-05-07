@@ -39,7 +39,7 @@ const RecurringPaymentsList = ({ user, month }) => {
         recurringPayments.map((payment) => (
           <div
             key={payment.id}
-            className="flex flex-row justify-between items-center border rounded-lg p-3 mb-2 bg-teal-400 w-full"
+            className="flex flex-row justify-between items-center rounded-lg p-3 mb-2 bg-teal-400 w-full"
           >
             <h1 className="font-semibold">{payment.name}</h1>
             <div className="flex flex-col">
@@ -59,11 +59,16 @@ const RecurringPaymentsList = ({ user, month }) => {
           {recurringPayments.map((payment) => (
             <div
               key={payment.id}
-              className="flex flex-row justify-between items-center border rounded-lg p-3 mb-2 bg-teal-400"
+              className="flex flex-row justify-between items-center shadow-xl border rounded-lg py-3 px-4 mb-2 bg-neutral-800"
             >
-              <h1 className="font-semibold">{payment.name}</h1>
               <div className="flex flex-col">
-                <p className="font-semibold"> - £{payment.amount}</p>
+                <h1 className="font-semibold text-teal-500">{payment.name}</h1>
+                <h1 className="font-semibold text-xs text-gray-300">
+                  {payment.frequence}
+                </h1>
+              </div>
+              <div className="flex flex-col">
+                <p className="font-semibold text-white"> - £{payment.amount}</p>
               </div>
             </div>
           ))}

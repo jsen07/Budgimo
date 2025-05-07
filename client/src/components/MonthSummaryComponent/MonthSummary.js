@@ -125,28 +125,29 @@ const MonthSummary = ({
       </div>
       {/* TOTAL BALANCE */}
       <div className="flex flex-col w-full p-2 gap-4 mb-4 ">
-        <div className="w-full flex flex-row justify-between text-sm font-normal">
+        <div className="w-full flex flex-row justify-between text-sm font-semibold">
           <h1>
             <AccountBalanceWalletRoundedIcon className="text-teal-500 mr-1" />
             Total Balance
           </h1>
-          <h1>
-            Monthly limit: {getSymbolFromCurrency(month?.currency)}{" "}
+          <h1 className="text-xs">
+            Budget: {getSymbolFromCurrency(month?.currency)}
             {month?.budget || 0}
           </h1>
         </div>
         <h1 className="text-5xl font-semibold text-black">
-          {getSymbolFromCurrency(month?.currency)} {month?.balance}
+          {getSymbolFromCurrency(month?.currency)}
+          {month?.balance}
         </h1>
 
-        <div className="text-xs flex flex-row w-full justify-between">
+        <div className="text-xs flex flex-row w-full justify-between font-semibold">
           <h1>
-            {" "}
-            {getSymbolFromCurrency(month?.currency)} {month?.balance || 0}
+            {getSymbolFromCurrency(month?.currency)}
+            {month?.balance || 0}
           </h1>
           <h1>
-            {" "}
-            {getSymbolFromCurrency(month?.currency)} {month?.budget || 0}
+            {getSymbolFromCurrency(month?.currency)}
+            {month?.budget || 0}
           </h1>
         </div>
         <div className="w-full bg-gray-500 rounded-full h-2.5 mb-4">
@@ -157,15 +158,11 @@ const MonthSummary = ({
               maxWidth: "100%",
             }}
           ></div>
-          <p className="text-xs font-thinner">{percentage}%</p>
+          <p className="text-xs mt-1 font-semibold">{percentage}%</p>
         </div>
-
-        <div className="flex flex-row text-white w-full font-semibold">
-          <button className="w-1/3 flex items-center justify-center border rounded-xl p-2 bg-black shadow-md">
-            {" "}
-            Deposit{" "}
-          </button>
-        </div>
+        <button className="w-1/3  text-white font-semibold flex items-center justify-center border rounded-xl p-2 bg-neutral-800 shadow-md">
+          Deposit
+        </button>
       </div>
 
       {/* TRANSACTIONS */}
