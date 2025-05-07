@@ -6,7 +6,6 @@ import useDelayedLoading from "../../../hooks/DelayedLoading";
 import {
   formatDateTransactions,
   groupTransactionsByDate,
-  sortTransactionsByDate,
 } from "../../../utils/helperFunctions";
 const getSymbolFromCurrency = require("currency-symbol-map");
 
@@ -16,7 +15,6 @@ const TransactionList = ({
   loading,
   error,
   currency,
-  sort,
 }) => {
   const navigate = useNavigate();
   const [exchangeRates, setExchangeRates] = useState({});
@@ -62,10 +60,24 @@ const TransactionList = ({
   };
 
   const processedTransactions = useMemo(() => {
-    if (!Array.isArray(transactionData)) return [];
-    const data = limit ? transactionData.slice(-limit) : transactionData;
-    return sort ? sortTransactionsByDate(data) : data;
-  }, [transactionData, limit, sort]);
+    if (!Array.isArray(transactionData) || transactionData.length === 0)
+      return [];
+
+    const currentDate = new Date();
+
+    const sortByClosest = [...transactionData].sort((a, b) => {
+      const dateA = new Date(a.date);
+      const dateB = new Date(b.date);
+      return Math.abs(dateA - currentDate) - Math.abs(dateB - currentDate);
+    });
+
+    const closestThree = sortByClosest.slice(
+      0,
+      limit ? limit : transactionData.length
+    );
+
+    return closestThree;
+  }, [transactionData, limit]);
 
   const grouped = useMemo(() => {
     return groupTransactionsByDate(

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
-import FsLoading from "../Loaders/FsLoading";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
 import SwapHorizRoundedIcon from "@mui/icons-material/SwapHorizRounded";
 import AccountBalanceWalletRoundedIcon from "@mui/icons-material/AccountBalanceWalletRounded";
@@ -28,7 +27,6 @@ const MonthSummary = ({
   const [activeMonths, setActiveMonths] = useState([]);
   const [recurringPayments, setRecurringPayments] = useState([]);
   const [changeMonthActive, setChangeMonthActive] = useState(false);
-  const [exchangeRates, setExchangeRates] = useState(null);
   const { data: monthsData, loading: monthsLoading } = useQuery(
     getMonthsByUser,
     {
@@ -182,7 +180,6 @@ const MonthSummary = ({
           transactionData={month?.expenses || null}
           loading={loading}
           error={error}
-          sort={true}
         />
       </div>
 
