@@ -62,7 +62,7 @@ export const sortTransactionsByDate = (transactions) => {
 };
 export const calculatePercentage = (budget, spent) => {
   const percentage_spent = (spent / budget) * 100;
-  return percentage_spent.toFixed(2);
+  return percentage_spent.toFixed(0);
 };
 
 export const formatDateToString = (dateString) => {

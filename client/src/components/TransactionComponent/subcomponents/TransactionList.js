@@ -1,8 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import FastfoodRoundedIcon from "@mui/icons-material/FastfoodRounded";
-import clsx from "clsx";
 import TransactionSkeleton from "../../Loaders/TransactionSkeleton";
+import categoryIcons from "../../../presets/categoryIcons";
 import useDelayedLoading from "../../../hooks/DelayedLoading";
 import {
   formatDateTransactions,
@@ -108,7 +107,7 @@ const TransactionList = ({
 
           return (
             <div key={date}>
-              <h2 className="font-semibold text-md my-4 w-full flex justify-between">
+              <h2 className="font-bold text-md my-4 w-full flex justify-between text-neutral-800">
                 {date}
                 <span
                   className={`font-semibold ${
@@ -118,30 +117,41 @@ const TransactionList = ({
                   {formattedTotal}
                 </span>
               </h2>
-              <div
-                className={clsx("border-teal-400 border rounded-lg shadow-sm")}
-              >
+              <div className="border-t-2">
                 {grouped[date].map((expense) => {
                   const converted = convertToTarget(expense);
                   const originalAmount = Number(expense.amount || 0);
+                  const customIcon = categoryIcons.find(
+                    (icon) => icon.name === "Custom"
+                  )?.icon;
+                  const matchedIcon =
+                    categoryIcons.find(
+                      (icon) => icon.name === expense?.category?.name
+                    )?.icon || customIcon;
                   return (
                     <div
                       key={expense._id || expense.id}
-                      className="flex flex-row justify-between items-center p-3 cursor-pointer"
+                      className="flex flex-row justify-between items-center p-3 cursor-pointer border-b-2"
                       onClick={() =>
                         navigate(
                           `/transactions/edit/${expense._id || expense.id}`
                         )
                       }
                     >
-                      <div className="flex items-center">
-                        <FastfoodRoundedIcon />
-                        <h1 className="font-semibold ml-2">{expense.name}</h1>
+                      <div className="flex items-center justify-center">
+                        <div className="flex items-center justify-center p-2 rounded-lg bg-neutral-800">
+                          {matchedIcon}
+                        </div>
+                        <div className="flex flex-col justify-center ml-2">
+                          <h1 className="font-semibold text-teal-700">
+                            {expense.name}
+                          </h1>
+                          <p className="text-xs font-medium text-neutral-600">
+                            {expense.category?.name || "Uncategorized"}
+                          </p>
+                        </div>
                       </div>
-                      <div className="flex flex-col text-right">
-                        <p className="text-sm text-neutral-500">
-                          {expense.category?.name || "Uncategorized"}
-                        </p>
+                      <div className="text-right flex flex-col">
                         <p
                           className={`font-semibold ${
                             expense.moneyOut ? "text-red-600" : "text-green-700"
