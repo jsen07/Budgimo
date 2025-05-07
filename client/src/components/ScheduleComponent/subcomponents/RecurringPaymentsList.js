@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { getAllRecurringPayment } from "../../../utils/queries/queries";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import { formatDateToDayMonth } from "../../../utils/helperFunctions";
 
 const RecurringPaymentsList = ({ user, month }) => {
   const [recurringPayments, setRecurringPayments] = useState([]);
@@ -22,7 +23,7 @@ const RecurringPaymentsList = ({ user, month }) => {
       if (month) {
         const filtered = payments.filter((payment) => {
           const [currentMonth] = month.split("-");
-          const [paymentMonth] = payment.date.split("-");
+          const [day, paymentMonth] = payment.date.split("-");
 
           return paymentMonth === currentMonth;
         });
@@ -44,6 +45,10 @@ const RecurringPaymentsList = ({ user, month }) => {
             <h1 className="font-semibold">{payment.name}</h1>
             <div className="flex flex-col">
               <p className="font-semibold"> - £{payment.amount}</p>
+              <p className="font-semibold">{payment.frequence}</p>
+              <p className="font-semibold">
+                {formatDateToDayMonth(payment.date)}
+              </p>
             </div>
           </div>
         ))}
@@ -68,6 +73,9 @@ const RecurringPaymentsList = ({ user, month }) => {
                 </h1>
               </div>
               <div className="flex flex-col">
+                <h1 className="font-semibold text-xs text-blue-400 text-right">
+                  {formatDateToDayMonth(payment.date)}
+                </h1>
                 <p className="font-semibold text-white"> - £{payment.amount}</p>
               </div>
             </div>

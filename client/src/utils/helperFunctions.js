@@ -87,3 +87,27 @@ export const formatDateToString = (dateString) => {
 
   return `${monthName} ${year}`;
 };
+
+export const formatDateToDayMonth = (dateString) => {
+  const [d, m] = dateString.split("-");
+  const day = parseInt(d, 10);
+
+  const monthNames = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
+  ];
+
+  const month = monthNames[parseInt(m, 10) - 1];
+
+  return `${day} ${month}`;
+};

@@ -15,7 +15,7 @@ const categoryIcons = [
     icon: <CommuteRoundedIcon className="text-blue-600" />,
   },
   { name: "Entertainment", icon: <MovieIcon className="text-purple-500" /> },
-  { name: "Housing", icon: <HomeRoundedIcon className="text-stone-600" /> },
+  { name: "Housing", icon: <HomeRoundedIcon className="text-stone-400" /> },
   {
     name: "Utilities",
     icon: <FlashOnRoundedIcon className="text-yellow-400" />,

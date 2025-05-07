@@ -89,7 +89,6 @@ const Transactions = () => {
             transactionData={transactions}
             loading={loading}
             error={error}
-            sort={true}
           />
         </div>
       </div>
