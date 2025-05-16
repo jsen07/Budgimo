@@ -80,9 +80,10 @@ const MonthSummary = ({
   }, [recurringPaymentData]);
 
   // if (loading) return <FsLoading />;
+  if (loading || !data || !month) return null;
   return (
-    <div className="w-full px-4 flex flex-col font-sans pb-[100px] h-[calc(100vh-100px)] overflow-y-auto">
-      <div className="flex flex-row justify-between items-center border-b-2 p-3 mb-4 sticky top-0 bg-white">
+    <div className="w-full px-4 flex flex-col font-sans pb-[100px]">
+      <div className="flex flex-row justify-between items-center border-b-2 p-3 mb-4 sticky top-[60px] bg-white">
         <h1 className="text-2xl text-teal-800">
           {month && month.month
             ? formatDateToString(month.month)
@@ -184,15 +185,13 @@ const MonthSummary = ({
       </div>
 
       {/* RECURRING PAYMENTS */}
-
-      {/* <div className="flex flex-row justify-between w-full my-2">
-            <h1 className="font-semibold"> Upcoming payments </h1>
-            <h1 className="font-light tracking-tighter text-sm text-gray-600">
-              {" "}
-              See all <ArrowRightIcon className="text-black" />
-            </h1>
-          </div> */}
-      {month && <RecurringPaymentsList user={user} month={month?.month} />}
+      {month && (
+        <RecurringPaymentsList
+          user={user}
+          month={month?.month}
+          filter={false}
+        />
+      )}
     </div>
   );
 };
