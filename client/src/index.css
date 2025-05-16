@@ -88,3 +88,9 @@
 .react-calendar__navigation button:hover {
   background-color: #38b2ac !important; 
 }
+
+
+.react-calendar__navigation__label {
+  pointer-events: none;
+  cursor: default;
+}
