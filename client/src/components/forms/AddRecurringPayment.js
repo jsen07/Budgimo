@@ -3,6 +3,7 @@ import { useMutation } from "@apollo/client";
 import { addRecurringPayment } from "../../utils/mutations/mutations";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
+import { formatDateToDayMonth } from "../../utils/helperFunctions";
 
 const AddRecurringPayment = ({
   user,
@@ -124,18 +125,21 @@ const AddRecurringPayment = ({
             <label className="block text-gray-700 font-medium my-2">
               Pick a Date
             </label>
-            <div>
+            <div className="h-[400px]">
               <Calendar
                 onChange={handleDateChange}
                 value={calendarDate || value}
                 formatMonthYear={(locale, date) =>
                   date.toLocaleString(locale, { month: "long" })
                 }
+                prev2Label={null} // Removes the double-left arrow
+                next2Label={null}
               />
             </div>
             {(date || selectedDate) && (
               <p className="text-sm text-gray-500">
-                Selected: <strong>{date || selectedDate}</strong>
+                Selected:{" "}
+                <strong>{formatDateToDayMonth(date || selectedDate)}</strong>
               </p>
             )}
           </>
