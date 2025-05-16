@@ -111,3 +111,16 @@ export const formatDateToDayMonth = (dateString) => {
 
   return `${day} ${month}`;
 };
+
+export const getDaysDifference = (dateStr) => {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const [day, month] = dateStr.split("-").map(Number);
+  const currentYear = today.getFullYear();
+  const date = new Date(currentYear, month - 1, day);
+  date.setHours(0, 0, 0, 0);
+
+  const msInDay = 1000 * 60 * 60 * 24;
+  // console.log(Math.abs(Math.round((date - today) / msInDay)));
+  return Math.abs(Math.round((date - today) / msInDay));
+};

@@ -40,7 +40,7 @@ const Dashboard = () => {
 
   // if (loading || childLoading) return <FsLoading />;
   return (
-    <div className="w-full max-h-screen">
+    <div className="">
       <div className="w-full h-auto sticky top-0  bg-white flex flex-row py-4 px-6 justify-between items-center z-10">
         <h1 className="font-hero font-semibold text-2xl text-teal-600">
           Budgimo

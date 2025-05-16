@@ -9,9 +9,12 @@ import "react-calendar/dist/Calendar.css";
 import { useQuery } from "@apollo/client";
 import { getAllRecurringPayment } from "../../utils/queries/queries";
 import AddIcon from "@mui/icons-material/Add";
+import CalendarTodayIcon from "@mui/icons-material/CalendarToday";
 import AddMonthlyBudget from "../forms/AddMonthlyBudget";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import RecurringPaymentsList from "./subcomponents/RecurringPaymentsList";
+import AddRecurringPayment from "../forms/AddRecurringPayment";
+import { formatDateToDayMonth } from "../../utils/helperFunctions";
 
 const Schedule = () => {
   const navigate = useNavigate();
@@ -22,6 +25,10 @@ const Schedule = () => {
   const [recurringPayments, setRecurringPayments] = useState([]);
   const [closing, setClosing] = useState(false);
   const [addMonthToggle, setAddMonthToggle] = useState(false);
+  const [addRecurringPaymentToggle, setAddRecurringPaymentToggle] =
+    useState(false);
+  const [selectedDay, setSelectedDay] = useState("");
+  const [selectedDate, setSelectedDate] = useState("");
 
   const { data: recurringPaymentData } = useQuery(getAllRecurringPayment, {
     skip: !user,
@@ -58,6 +65,12 @@ const Schedule = () => {
     const year = date.getFullYear();
     const dayOfWeek = weekdays[date.getDay()];
     const lastDayOfMonth = new Date(year, month + 1, 0).getDate();
+
+    const selectedDay = String(day).padStart(2, "0");
+    const selectedMonth = String(month + 1).padStart(2, "0");
+    setSelectedDate(`${selectedDay}-${selectedMonth}`);
+
+    setSelectedDay(dayOfWeek);
 
     const matched = recurringPayments.filter((e) => {
       if (e.frequence === "Weekly") {
@@ -126,119 +139,168 @@ const Schedule = () => {
     }
   };
 
+  const toggleAddRecurringPaymentMenu = () => {
+    if (addRecurringPaymentToggle) {
+      setClosing(true);
+      setTimeout(() => {
+        setAddRecurringPaymentToggle(false);
+        setClosing(false);
+      }, 300);
+    } else {
+      setAddRecurringPaymentToggle(true);
+    }
+  };
+
   return (
     <div className="flex flex-col font-sans h-screen pb-[100px]">
-      <div className="sticky top-0 w-full flex flex-col py-8 bg-white z-50">
-        <div className="flex flex-row justify-between items-center text-2xl px-2 relative">
-          <ArrowBackIosRoundedIcon onClick={() => navigate("/dashboard")} />
-          <h1 className="font-semibold tracking-wide absolute left-1/2 -translate-x-1/2">
-            Schedule
-          </h1>
-          <button
-            className="flex flex-row gap-2 text-teal-600 mr-2"
-            onClick={() => setCalendarView(!calendarView)}
-          >
-            <CalendarViewDayIcon style={{ fontSize: "28px" }} />
-          </button>
-        </div>
-      </div>
-
-      {calendarView ? (
-        <div className="w-full py-2 flex flex-col mt-2 h-full relative">
-          <button
-            className="border-2  ml-2 p-2 rounded-lg border-teal-200 text-white font-medium bg-teal-500 border-2 w-1/3 mx-1"
-            onClick={() => setCalendarView((prev) => !prev)}
-          >
-            Overview
-          </button>
-
-          <div className="w-full flex items-center justify-center sticky top-[60px]">
-            <Calendar
-              className="react-calendar w-full max-w-none py-5 px-2"
-              onChange={handleDateChange}
-              value={value}
-              tileContent={tileContent}
-            />
-          </div>
-
-          {payments.length > 0 ? (
-            <div className="p-4 text-center h-auto pb-[100px]">
-              <h2 className="text-lg font-semibold text-teal-700">
-                Payment Details
-              </h2>
-              {payments.map((payment, index) => (
-                <div
-                  key={index}
-                  className="mb-2 flex flex-col items-start gap-2 mt-4 p-3 rounded-lg border border-teal-400"
-                >
-                  <p className="text-sm text-gray-700 font-bold">
-                    {payment.frequence}
-                  </p>
-                  <div className="flex flex-row w-full justify-between">
-                    <p className="text-sm text-gray-700 font-medium">
-                      {payment.name}
-                    </p>
-                    <p className="text-sm text-gray-700">£{payment.amount}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          ) : (
-            <div className="p-4 text-center text-sm text-gray-400 italic h-full flex items-center w-full">
-              <div className="w-full h-full flex  flex-col justify-between">
-                <p>No payments on this day.</p>
-                <button className="p-3 rounded-md bg-blue-400 mt-2 text-black">
-                  Add a recurring payment
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      ) : (
-        <div className="w-full flex flex-col px-4 items-start relative h-full">
-          <div className="flex flex-row justify-between my-4 text-sm w-full">
-            <button
-              onClick={() => toggleAddMonthMenu()}
-              className="py-2 px-3 rounded-lg flex items-center justify-center gap-1 bg-teal-400 border"
-            >
-              Add Budget <AddIcon />
-            </button>
-            <button
-              className="border p-2 rounded rounded-lg bg-teal-300"
-              onClick={() => setCalendarView((prev) => !prev)}
-            >
-              Calendar view
-            </button>
-          </div>
-
-          {addMonthToggle && (
-            <div
-              className={`fixed bottom-0 pb-[100px] left-0  p-3 w-full border-t-lg rounded-xl bg-white border-2 ${
-                closing ? "animate-slide-out-bottom" : "animate-slide-in-bottom"
-              }`}
-            >
-              <button
-                className="w-full flex justify-end"
-                onClick={() => toggleAddMonthMenu()}
-              >
-                {" "}
-                <CloseRoundedIcon />{" "}
-              </button>
-              <AddMonthlyBudget
-                toggleAddMonthMenu={toggleAddMonthMenu}
-                user={user}
+      {!addRecurringPaymentToggle && (
+        <>
+          <div className="sticky top-0 w-full flex flex-col py-8 bg-white z-50">
+            <div className="flex flex-row justify-between items-center text-2xl px-2 relative">
+              <ArrowBackIosRoundedIcon onClick={() => navigate("/dashboard")} />
+              <h1 className="font-semibold tracking-wide absolute left-1/2 -translate-x-1/2">
+                Schedule
+              </h1>
+              <CalendarViewDayIcon
+                style={{ fontSize: "28px" }}
+                className="text-teal-600 mr-2"
               />
             </div>
-          )}
+          </div>
 
-          <h1 className="text-lg font-medium text-gray-600 mb-4 border-y-2 w-full py-2 px-1">
-            Subscriptions
-          </h1>
-          <RecurringPaymentsList user={user} />
-        </div>
+          {calendarView ? (
+            <div className="w-full py-2 flex flex-col mt-2 h-full relative">
+              <button
+                className="py-2 px-3 rounded-lg flex items-center justify-center bg-teal-400 font-semibold shadow-md w-1/3 ml-4 text-sm"
+                onClick={() => setCalendarView((prev) => !prev)}
+              >
+                Overview
+              </button>
+
+              <div className="w-full flex items-center justify-center sticky top-[60px]">
+                <Calendar
+                  className="react-calendar w-full max-w-none py-5 px-2"
+                  onChange={handleDateChange}
+                  value={value}
+                  tileContent={tileContent}
+                />
+              </div>
+
+              {payments.length > 0 ? (
+                <div className="p-4 text-center h-auto pb-[100px]">
+                  <h2 className="text-lg font-semibold text-teal-700 mb-2">
+                    Payment Details
+                  </h2>
+                  {payments.map((payment, index) => (
+                    <div
+                      key={payment.id}
+                      className="flex flex-row justify-between items-center shadow-xl border rounded-lg py-3 px-4 mb-2 bg-neutral-800"
+                    >
+                      <h1 className="font-semibold text-teal-500">
+                        {payment.name}
+                      </h1>
+                      <div className="flex flex-col text-right">
+                        <h1 className="font-semibold text-xs text-blue-400">
+                          {formatDateToDayMonth(payment.date)}
+                        </h1>
+                        <p className="font-semibold text-white">
+                          {" "}
+                          - £{payment.amount}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                  <button
+                    className="p-3 rounded-md bg-blue-400 my-2 text-black text-sm w-full"
+                    onClick={toggleAddRecurringPaymentMenu}
+                  >
+                    Add a recurring payment
+                  </button>
+                </div>
+              ) : (
+                <div className="p-4 text-center text-sm text-gray-400 italic h-full flex items-center w-full">
+                  <div className="w-full h-full flex flex-col justify-between">
+                    <p>No payments on this day.</p>
+                    <button
+                      className="p-3 rounded-md bg-blue-400 mt-2 text-black"
+                      onClick={toggleAddRecurringPaymentMenu}
+                    >
+                      Add a recurring payment
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="w-full flex flex-col px-4 items-start relative h-full">
+              <div className="flex flex-row justify-between my-4 text-sm w-full">
+                <button
+                  onClick={toggleAddMonthMenu}
+                  className="py-2 px-3 rounded-lg flex items-center justify-center gap-1 bg-teal-400 font-semibold shadow-md"
+                >
+                  Add Budget <AddIcon style={{ fontSize: "1.25rem" }} />
+                </button>
+                <button
+                  className="py-2 px-3 rounded-lg flex items-center justify-center gap-1 bg-teal-400 font-semibold shadow-md"
+                  onClick={() => setCalendarView((prev) => !prev)}
+                >
+                  Calendar{" "}
+                  <CalendarTodayIcon style={{ fontSize: "0.875rem" }} />
+                </button>
+              </div>
+
+              {addMonthToggle && (
+                <div
+                  className={`fixed bottom-0 pb-[100px] left-0 p-3 w-full rounded-xl bg-white border-2 ${
+                    closing
+                      ? "animate-slide-out-bottom"
+                      : "animate-slide-in-bottom"
+                  }`}
+                >
+                  <button
+                    className="w-full flex justify-end"
+                    onClick={toggleAddMonthMenu}
+                  >
+                    <CloseRoundedIcon />
+                  </button>
+                  <AddMonthlyBudget
+                    toggleAddMonthMenu={toggleAddMonthMenu}
+                    user={user}
+                  />
+                </div>
+              )}
+
+              <h1 className="text-lg font-medium text-black mb-4 border-b-2 w-full py-2 px-1">
+                Subscriptions
+              </h1>
+              <RecurringPaymentsList user={user} filter={true} />
+            </div>
+          )}
+          <MobileNav />
+        </>
       )}
 
-      <MobileNav />
+      {addRecurringPaymentToggle && (
+        <div
+          className={`fixed bottom-0 left-0 px-3 w-full h-full flex flex-col ${
+            closing ? "animate-slide-out-bottom" : "animate-slide-in-bottom"
+          }`}
+        >
+          <button
+            className="w-full flex justify-end mt-2"
+            onClick={toggleAddRecurringPaymentMenu}
+          >
+            <CloseRoundedIcon />
+          </button>
+          <AddRecurringPayment
+            user={user}
+            selectedDay={selectedDay}
+            selectedDate={selectedDate}
+            value={value}
+            toggleAddRecurringPaymentMenu={toggleAddRecurringPaymentMenu}
+          />
+        </div>
+      )}
     </div>
   );
 };

@@ -196,4 +196,4 @@ const TransactionList = ({
   );
 };
 
-export default TransactionList;
+export default React.memo(TransactionList);

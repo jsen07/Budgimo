@@ -17,7 +17,7 @@ import FsLoading from "./components/Loaders/FsLoading";
 
 // Initialize Apollo Client
 const client = new ApolloClient({
-  uri: `http://localhost:3001/graphql`,
+  uri: `/graphql`,
   cache: new InMemoryCache(),
 });
 
