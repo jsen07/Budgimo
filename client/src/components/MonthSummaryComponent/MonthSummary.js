@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "@apollo/client";
 import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import SwapHorizRoundedIcon from "@mui/icons-material/SwapHorizRounded";
 import AccountBalanceWalletRoundedIcon from "@mui/icons-material/AccountBalanceWalletRounded";
 import TransactionList from "../TransactionComponent/subcomponents/TransactionList";
@@ -27,6 +28,8 @@ const MonthSummary = ({
   const [activeMonths, setActiveMonths] = useState([]);
   const [recurringPayments, setRecurringPayments] = useState([]);
   const [changeMonthActive, setChangeMonthActive] = useState(false);
+  const [viewTransactionToggle, setViewTransactionToggle] = useState(false);
+  const [closing, setClosing] = useState(false);
   const { data: monthsData, loading: monthsLoading } = useQuery(
     getMonthsByUser,
     {
@@ -49,6 +52,17 @@ const MonthSummary = ({
     },
   });
 
+  const toggleViewTransactionMenu = () => {
+    if (viewTransactionToggle) {
+      setClosing(true);
+      setTimeout(() => {
+        setViewTransactionToggle(false);
+        setClosing(false);
+      }, 300);
+    } else {
+      setViewTransactionToggle(true);
+    }
+  };
   useEffect(() => {
     if (data && data.getExpensesByMonth !== null) {
       setMonth(data.getExpensesByMonth);
@@ -84,7 +98,7 @@ const MonthSummary = ({
   return (
     <div className="w-full px-4 flex flex-col font-sans pb-[100px]">
       <div className="flex flex-row justify-between items-center border-b-2 p-3 mb-4 sticky top-[60px] bg-white">
-        <h1 className="text-2xl text-teal-800">
+        <h1 className="text-2xl text-teal-700">
           {month && month.month
             ? formatDateToString(month.month)
             : "Invalid Date"}
@@ -136,13 +150,13 @@ const MonthSummary = ({
         </div>
         <h1 className="text-5xl font-semibold text-black">
           {getSymbolFromCurrency(month?.currency)}
-          {month?.balance}
+          {month?.balance.toFixed(2)}
         </h1>
 
         <div className="text-xs flex flex-row w-full justify-between font-semibold">
           <h1>
             {getSymbolFromCurrency(month?.currency)}
-            {month?.balance || 0}
+            {month?.balance.toFixed(2) || 0}
           </h1>
           <h1>
             {getSymbolFromCurrency(month?.currency)}
@@ -167,10 +181,15 @@ const MonthSummary = ({
       {/* TRANSACTIONS */}
       <div className="flex flex-row justify-between w-full my-2">
         <h1 className="font-semibold"> Transactions</h1>
-        <h1 className="font-light tracking-tighter text-sm text-gray-600">
+        <button
+          className="font-light tracking-tighter text-sm text-gray-600"
+          onClick={() => {
+            toggleViewTransactionMenu();
+          }}
+        >
           {" "}
           See all <ArrowRightIcon className="text-black" />
-        </h1>
+        </button>
       </div>
 
       {/* TRANSACTIONS LIST */}
@@ -184,13 +203,38 @@ const MonthSummary = ({
         />
       </div>
 
+      {viewTransactionToggle && (
+        <div
+          className={`fixed bottom-0 left-0 h-3/4 overflow-y-auto w-full bg-white border-t-lg rounded-xl px-4 border-2 flex flex-col pb-[20px] z-10 ${
+            closing ? "animate-slide-out-bottom" : "animate-slide-in-bottom"
+          }`}
+        >
+          <div className="w-full flex items-end justify-between sticky top-0 py-4 bg-white">
+            <h1 className="text-md font-semibold text-neutral-900">
+              {" "}
+              {formatDateToString(month.month)} transactions
+            </h1>
+            <CloseRoundedIcon onClick={() => toggleViewTransactionMenu()} />
+          </div>
+          <TransactionList
+            currency={month?.currency}
+            transactionData={month?.expenses || null}
+            loading={loading}
+            error={error}
+            toggleViewTransactionMenu={toggleViewTransactionMenu}
+          />
+        </div>
+      )}
+
       {/* RECURRING PAYMENTS */}
       {month && (
-        <RecurringPaymentsList
-          user={user}
-          month={month?.month}
-          filter={false}
-        />
+        <>
+          <RecurringPaymentsList
+            user={user}
+            month={month?.month}
+            filter={false}
+          />
+        </>
       )}
     </div>
   );

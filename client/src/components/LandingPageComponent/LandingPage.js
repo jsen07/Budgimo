@@ -125,7 +125,7 @@ const LandingPage = () => {
             <div className="animate-fade2 lg:mt-10 lg:my-4 lg:w-full lg:w-[700px]">
               {/* <h2 className='text-xl font-sans font-thin text-indigo-950 mb-10 text-center'>Join thousands on the journey to financial freedom.</h2> */}
 
-              <h1 className="text-medium font-sans font-thin text-black mb-10 text-center mx-4 mt-10 md:mb-1 md:text-start lg:m-0">
+              <h1 className="text-medium font-sans font-semibold text-black mb-10 text-center mx-4 mt-10 md:mb-1 md:text-start lg:m-0">
                 Managing your finances just got easier with Budgimo! Whether
                 you're saving for a special goal, tracking monthly expenses, or
                 simply looking to take control of your financial future, Budgimo

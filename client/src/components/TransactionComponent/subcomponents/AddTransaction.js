@@ -132,7 +132,7 @@ const AddTransaction = ({ toggleAddTransactionMenu, user }) => {
       });
 
       if (data) {
-        console.log(data);
+        toggleAddTransactionMenu();
       }
     } catch (error) {
       console.log(error);

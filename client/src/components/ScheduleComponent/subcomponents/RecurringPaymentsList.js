@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { useQuery } from "@apollo/client";
 import { getAllRecurringPayment } from "../../../utils/queries/queries";
-import ArrowRightIcon from "@mui/icons-material/ArrowRight";
+
 import {
   formatDateToDayMonth,
   getDaysDifference,
@@ -83,14 +83,11 @@ const RecurringPaymentsList = ({ user, month, filter }) => {
     <>
       {!month && filter && groupedPaymentsByFrequence}
 
-      {month && recurringPayments.length > 0 && (
+      {month && !filter && recurringPayments.length > 0 && (
         <>
-          <div className="flex flex-row justify-between w-full my-2">
+          <div className="flex flex-row w-full my-2">
             <h1 className="font-semibold tracking-tighter">
               Recurring Payments
-            </h1>
-            <h1 className="font-light tracking-tighter text-sm text-gray-600 flex items-center gap-1">
-              See all <ArrowRightIcon className="text-black w-4 h-4" />
             </h1>
           </div>
           {recurringPayments.map((payment) => (

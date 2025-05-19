@@ -26,6 +26,14 @@ module.exports = {
           "0%": { opacity: 0 },
           "100%": { opacity: 1 },
         },
+        fadeInOut: {
+          "0%, 100%": { opacity: "0.3" },
+          "50%": { opacity: "1" },
+        },
+        customPulse: {
+          "0%, 100%": { opacity: "0.4" },
+          "50%": { opacity: "1" },
+        },
         slideIn: {
           "0%": { transform: "translateY(-100%)" },
           "100%": { transform: "translateY(0)" },
@@ -51,6 +59,8 @@ module.exports = {
         quickFade: "fadeIn 0.2s ease-in",
         fade1: "fadeIn 1s ease-in-out",
         fade2: "fadeIn 2s ease-in-out",
+        fadeInOut: "fadeInOut 5s ease-in-out infinite",
+        customPulse: "customPulse 1.2s ease-in-out infinite",
         "slide-in": "slideIn 0.5s ease-out forwards",
         "slide-in-bottom": "slideInBottom 0.5s ease-out forwards",
         "slide-out": "slide-out 0.5s ease-in forwards",
