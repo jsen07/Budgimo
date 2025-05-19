@@ -6,6 +6,7 @@ export const getExpensesByCategory = gql`
       id
       name
       currency
+      rate
       amount
       moneyOut
       date
@@ -28,6 +29,7 @@ export const getAllExpensesByUser = gql`
       id
       name
       currency
+      rate
       amount
       moneyOut
       date
@@ -87,6 +89,7 @@ export const getExpensesByMonth = gql`
         id
         name
         currency
+        rate
         amount
         moneyOut
         date
@@ -111,6 +114,7 @@ export const getClosestMonth = gql`
         id
         name
         currency
+        rate
         amount
         moneyOut
         date

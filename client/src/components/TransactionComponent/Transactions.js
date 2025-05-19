@@ -14,6 +14,7 @@ import { getAllExpensesByUser } from "../../utils/queries/queries";
 const Transactions = () => {
   // let date = Date.now();
   const navigate = useNavigate();
+  const [allTransactions, setAllTransactions] = useState([]);
   const [transactions, setTransactions] = useState();
   const [user, setUser] = useState(null);
   const [addTransactionToggle, setAddTransactionToggle] = useState(false);
@@ -33,6 +34,7 @@ const Transactions = () => {
 
   useEffect(() => {
     if (data) {
+      setAllTransactions(data.getAllExpensesByUser);
       setTransactions(data.getAllExpensesByUser);
     }
   }, [data]);
@@ -49,8 +51,26 @@ const Transactions = () => {
     }
   };
 
+  const filterBysearch = (e) => {
+    let query = e.target.value.toLowerCase();
+
+    if (!query) {
+      setTransactions(allTransactions);
+      return;
+    }
+
+    const filtered = transactions.filter((transaction) => {
+      const nameMatch = transaction.name?.toLowerCase().includes(query);
+      const categoryMatch = transaction.category?.name
+        .toLowerCase()
+        .includes(query);
+      return nameMatch || categoryMatch;
+    });
+
+    setTransactions(filtered);
+  };
   return (
-    <div className="flex flex-col font-sans items-center pb-[100px]">
+    <div className="flex flex-col font-sans items-center pb-[132px] h-screen">
       <div className="sticky top-0 w-full flex flex-col pt-8 bg-white">
         <div className="flex flex-row justify-between items-center text-2xl px-2 relative">
           <ArrowBackIosRoundedIcon onClick={() => navigate("/dashboard")} />
@@ -73,17 +93,18 @@ const Transactions = () => {
         <div className="mt-8 px-2 flex flex-row items-center gap-2 mb-2">
           <input
             className="w-full border h-10 px-4 rounded-lg focus:border"
-            placeholder="Search"
+            placeholder="Search by name or category"
+            onChange={filterBysearch}
           ></input>
           <SearchRoundedIcon style={{ fontSize: "36px" }} />
         </div>
       </div>
 
-      <div className="w-full mt-4 px-2">
-        <h1 className="mb-2 tracking-tighter font-semibold text-gray-900">
-          Recent transactions
-        </h1>
-        <div className="w-full px-1 flex flex-col">
+      <div className="w-full mt-4 px-2 flex flex-col">
+        <div className="w-full px-1 flex flex-col grow mb-[100px]">
+          <h1 className="my-2 tracking-tighter font-semibold text-gray-900">
+            Recent transactions
+          </h1>
           <TransactionList
             limit={null}
             transactionData={transactions}
@@ -104,7 +125,6 @@ const Transactions = () => {
             toggleAddTransactionMenu={toggleAddTransactionMenu}
             user={user}
           />
-          <div className="w-full"></div>
         </div>
       )}
 

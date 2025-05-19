@@ -104,6 +104,7 @@ export const addExpense = gql`
       id
       name
       currency
+      rate
       amount
       moneyOut
       date

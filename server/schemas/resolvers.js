@@ -330,6 +330,7 @@ const resolvers = {
 
         const monthCurrency = month.currency.toLowerCase();
         const expenseCurrency = currency.toLowerCase();
+        let rate = 1;
 
         let convertedAmount = parsedAmount;
 
@@ -342,32 +343,21 @@ const resolvers = {
           }
 
           const data = await response.json();
-          const rate = data[expenseCurrency][monthCurrency];
+          rate = data[expenseCurrency][monthCurrency];
 
           if (!rate) {
             throw new ApolloError("Conversion rate not available");
           }
 
-          convertedAmount = parsedAmount * rate;
+          convertedAmount = parsedAmount * rate.toFixed(2);
         }
 
         const balanceChange = moneyOut ? -convertedAmount : +convertedAmount;
 
-        const updatedMonth = await Month.findByIdAndUpdate(
-          monthId,
-          { $inc: { balance: balanceChange } },
-          { new: true }
-        );
-        if (!updatedMonth) {
-          throw new ApolloError(
-            "Month not found after update",
-            "MONTH_NOT_FOUND"
-          );
-        }
-
         const expense = new Expense({
           name,
           currency,
+          rate,
           amount: parsedAmount,
           moneyOut,
           date,
@@ -379,6 +369,20 @@ const resolvers = {
         const savedExpense = await expense.save();
         if (!savedExpense) {
           throw new ApolloError("Failed to save expense", "SAVE_FAILED");
+        }
+
+        if (savedExpense) {
+          const updatedMonth = await Month.findByIdAndUpdate(
+            monthId,
+            { $inc: { balance: balanceChange } },
+            { new: true }
+          );
+          if (!updatedMonth) {
+            throw new ApolloError(
+              "Month not found after update",
+              "MONTH_NOT_FOUND"
+            );
+          }
         }
 
         const populatedExpense = await Expense.findById(savedExpense._id)

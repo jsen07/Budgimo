@@ -1,17 +1,33 @@
 import { useState, useEffect } from "react";
 
-const useDelayedLoading = (loading, delay = 1000) => {
+/**
+ * Shows a loading indicator immediately when `loading` is true,
+ * and keeps it visible for `delay` ms after `loading` turns false.
+ */
+const useDelayedLoading = (loading, delay = 500) => {
   const [showLoading, setShowLoading] = useState(false);
+  const [hideTimeout, setHideTimeout] = useState(null);
 
   useEffect(() => {
-    let timer;
     if (loading) {
-      timer = setTimeout(() => setShowLoading(true), delay);
+      // Cancel any pending hide timeout
+      if (hideTimeout) {
+        clearTimeout(hideTimeout);
+        setHideTimeout(null);
+      }
+      setShowLoading(true);
     } else {
-      setShowLoading(false);
-      clearTimeout(timer);
+      // Delay hiding
+      const timeout = setTimeout(() => {
+        setShowLoading(false);
+        setHideTimeout(null);
+      }, delay);
+      setHideTimeout(timeout);
     }
-    return () => clearTimeout(timer);
+
+    return () => {
+      if (hideTimeout) clearTimeout(hideTimeout);
+    };
   }, [loading, delay]);
 
   return showLoading;

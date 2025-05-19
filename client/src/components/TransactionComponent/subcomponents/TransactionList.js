@@ -18,7 +18,7 @@ const TransactionList = ({
 }) => {
   const navigate = useNavigate();
   const [exchangeRates, setExchangeRates] = useState({});
-  const showLoading = useDelayedLoading(loading, 1000);
+  const showLoading = useDelayedLoading(loading, 500);
   const targetCurrency = currency?.toLowerCase() || "gbp";
 
   useEffect(() => {
@@ -45,7 +45,6 @@ const TransactionList = ({
           );
         }
       }
-
       setExchangeRates(rates);
     };
 
@@ -55,8 +54,13 @@ const TransactionList = ({
   const convertToTarget = (expense) => {
     const from = expense.currency?.toLowerCase();
     if (from === targetCurrency) return null;
+
     const rate = exchangeRates[from];
-    return rate ? Number(expense.amount) * rate : null;
+    if (typeof rate !== "number") return null;
+
+    const foreignExpense = from !== "gbp";
+    const foreignRate = foreignExpense ? rate : expense.rate;
+    return Number(expense.amount) * foreignRate;
   };
 
   const processedTransactions = useMemo(() => {
@@ -75,7 +79,6 @@ const TransactionList = ({
       0,
       limit ? limit : transactionData.length
     );
-
     return closestThree;
   }, [transactionData, limit]);
 
@@ -93,104 +96,113 @@ const TransactionList = ({
       {showLoading && (
         <>
           <TransactionSkeleton />
-          <TransactionSkeleton />
-          <TransactionSkeleton />
+          {/* <TransactionSkeleton />
+          <TransactionSkeleton /> */}
         </>
       )}
 
       {error && (
         <div className="alert alert-danger">
-          <p>Error loading transactions: {error.message}</p>
+          <p>
+            Error loading transactions:
+            {error.message}
+          </p>
         </div>
       )}
 
-      <div className="gap-2">
-        {Object.keys(grouped).map((date) => {
-          const dateTotal = grouped[date].reduce((sum, expense) => {
-            const converted = convertToTarget(expense);
-            const value = converted ?? Number(expense.amount || 0);
-            return expense.moneyOut ? sum - value : sum + value;
-          }, 0);
+      {!showLoading && (
+        <div className="gap-2">
+          {Object.keys(grouped).map((date) => {
+            const dateTotal = grouped[date].reduce((sum, expense) => {
+              const converted = convertToTarget(expense);
+              const value = converted ?? Number(expense.amount || 0);
+              return expense.moneyOut ? sum - value : sum + value;
+            }, 0);
 
-          const formattedTotal =
-            dateTotal < 0
-              ? `- ${currencySymbol}${Math.abs(dateTotal).toFixed(2)}`
-              : `${currencySymbol}${dateTotal.toFixed(2)}`;
+            const formattedTotal =
+              dateTotal < 0
+                ? `- ${currencySymbol}${Math.abs(dateTotal).toFixed(2)}`
+                : `${currencySymbol}${dateTotal.toFixed(2)}`;
 
-          return (
-            <div key={date}>
-              <h2 className="font-bold text-md my-4 w-full flex justify-between text-neutral-800">
-                {date}
-                <span
-                  className={`font-semibold ${
-                    dateTotal < 0 ? "text-red-700" : "text-blue-700"
-                  }`}
-                >
-                  {formattedTotal}
-                </span>
-              </h2>
-              <div className="border-t-2">
-                {grouped[date].map((expense) => {
-                  const converted = convertToTarget(expense);
-                  const originalAmount = Number(expense.amount || 0);
-                  const customIcon = categoryIcons.find(
-                    (icon) => icon.name === "Custom"
-                  )?.icon;
-                  const matchedIcon =
-                    categoryIcons.find(
-                      (icon) => icon.name === expense?.category?.name
-                    )?.icon || customIcon;
-                  return (
-                    <div
-                      key={expense._id || expense.id}
-                      className="flex flex-row justify-between items-center p-3 cursor-pointer border-b-2"
-                      onClick={() =>
-                        navigate(
-                          `/transactions/edit/${expense._id || expense.id}`
-                        )
-                      }
-                    >
-                      <div className="flex items-center justify-center">
-                        <div className="flex items-center justify-center p-2 rounded-lg bg-neutral-800">
-                          {matchedIcon}
+            return (
+              <div key={date}>
+                <h2 className="font-bold text-md my-4 w-full flex justify-between text-neutral-800">
+                  {date}
+                  <span
+                    className={`font-semibold ${
+                      dateTotal < 0 ? "text-red-700" : "text-blue-700"
+                    }`}
+                  >
+                    {formattedTotal}
+                  </span>
+                </h2>
+                <div className="border-t-2">
+                  {grouped[date].map((expense) => {
+                    const converted = convertToTarget(expense);
+                    const originalAmount = Number(expense.amount || 0);
+                    const customIcon = categoryIcons.find(
+                      (icon) => icon.name === "Custom"
+                    )?.icon;
+                    const matchedIcon =
+                      categoryIcons.find(
+                        (icon) => icon.name === expense?.category?.name
+                      )?.icon || customIcon;
+                    return (
+                      <div
+                        key={expense._id || expense.id}
+                        className="flex flex-row justify-between items-center p-3 cursor-pointer border-b-2"
+                        onClick={() =>
+                          navigate(
+                            `/transactions/edit/${expense._id || expense.id}`
+                          )
+                        }
+                      >
+                        <div className="flex items-center justify-center">
+                          <div className="flex items-center justify-center p-2 rounded-lg bg-neutral-800">
+                            {matchedIcon}
+                          </div>
+                          <div className="flex flex-col justify-center ml-2">
+                            <h1 className="font-semibold text-teal-700">
+                              {expense.name}
+                            </h1>
+                            <p className="text-xs font-medium text-neutral-600">
+                              {expense.category?.name || "Uncategorized"}
+                            </p>
+                          </div>
                         </div>
-                        <div className="flex flex-col justify-center ml-2">
-                          <h1 className="font-semibold text-teal-700">
-                            {expense.name}
-                          </h1>
-                          <p className="text-xs font-medium text-neutral-600">
-                            {expense.category?.name || "Uncategorized"}
+                        <div className="text-right flex flex-col">
+                          <p
+                            className={`font-semibold ${
+                              expense.moneyOut
+                                ? "text-red-600"
+                                : "text-green-700"
+                            }`}
+                          >
+                            {expense.moneyOut ? "-" : "+"}{" "}
+                            {getSymbolFromCurrency(expense.currency)}
+                            {originalAmount.toFixed(2)}
                           </p>
+                          {converted && (
+                            <span className="text-xs italic text-gray-500">
+                              ≈ {currencySymbol}
+                              {converted.toFixed(2)}
+                            </span>
+                          )}
                         </div>
                       </div>
-                      <div className="text-right flex flex-col">
-                        <p
-                          className={`font-semibold ${
-                            expense.moneyOut ? "text-red-600" : "text-green-700"
-                          }`}
-                        >
-                          {expense.moneyOut ? "-" : "+"}{" "}
-                          {getSymbolFromCurrency(expense.currency)}
-                          {originalAmount.toFixed(2)}
-                        </p>
-                        {converted && (
-                          <span className="text-xs italic text-gray-500">
-                            ≈ {currencySymbol}
-                            {converted.toFixed(2)}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })}
+                </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
 
-      {processedTransactions.length === 0 && !loading && !error && (
-        <p className="text-gray-500 mt-4">No transactions found.</p>
+      {processedTransactions.length === 0 && !showLoading && !error && (
+        <>
+          <p className="text-gray-500 mt-4">No transactions found.</p>
+        </>
       )}
     </>
   );

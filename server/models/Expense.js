@@ -11,6 +11,12 @@ const expenseSchema = new Schema({
     required: true,
     default: "GBP",
   },
+  rate: {
+    type: Number,
+    set: function (value) {
+      return parseFloat(value).toFixed(2);
+    },
+  },
   amount: {
     type: String,
     required: true,

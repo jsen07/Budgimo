@@ -23,6 +23,7 @@ const typeDefs = gql`
     id: ID!
     name: String!
     currency: String!
+    rate: Float!
     amount: String!
     moneyOut: Boolean!
     date: String!
