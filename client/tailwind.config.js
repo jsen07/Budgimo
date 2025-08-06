@@ -38,6 +38,14 @@ module.exports = {
           "0%": { transform: "translateY(-100%)" },
           "100%": { transform: "translateY(0)" },
         },
+        slideInRight: {
+          "0%": { transform: "translateX(50%)" },
+          "100%": { transform: "translateX(0)" },
+        },
+        slideOutRight: {
+          "0%": { transform: "translateX(0)" },
+          "100%": { transform: "translateX(50%)" },
+        },
         slideInBottom: {
           "0%": { transform: "translateY(100%)" },
           "100%": { transform: "translateY(0)" },
@@ -62,6 +70,8 @@ module.exports = {
         fadeInOut: "fadeInOut 5s ease-in-out infinite",
         customPulse: "customPulse 1.2s ease-in-out infinite",
         "slide-in": "slideIn 0.5s ease-out forwards",
+        "slide-in-right": "slideInRight 0.3s ease-out forwards",
+        "slide-out-right": "slideOutRight 0.3s ease-out forwards",
         "slide-in-bottom": "slideInBottom 0.5s ease-out forwards",
         "slide-out": "slide-out 0.5s ease-in forwards",
         "slide-out-bottom": "slideOutBottom 0.5s ease-out forwards",

@@ -1,9 +1,13 @@
 import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addMonthLocal, setActiveMonths } from "../../store/monthSlice";
 import { useMutation } from "@apollo/client";
 import { addMonth } from "../../utils/mutations/mutations";
 var cc = require("currency-codes");
 
 const AddMonthlyBudget = ({ user, toggleAddMonthMenu }) => {
+  const dispatch = useDispatch();
+  const activeMonths = useSelector((state) => state.month.activeMonths);
   const [addMonthlyBudget, { loading }] = useMutation(addMonth);
   const currencyCodes = cc.codes();
   const [month, setMonth] = useState("");
@@ -36,7 +40,9 @@ const AddMonthlyBudget = ({ user, toggleAddMonthMenu }) => {
       });
 
       if (data) {
-        console.log(data);
+        dispatch(addMonthLocal(data.addMonth));
+        console.log("Active months after dispatch:", activeMonths);
+        toggleAddMonthMenu();
       }
     } catch (err) {
       console.error("addMonthError:", err);

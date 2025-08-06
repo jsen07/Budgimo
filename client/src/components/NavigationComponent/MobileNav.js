@@ -12,7 +12,7 @@ const MobileNav = () => {
   const location = useLocation();
 
   return (
-    <div className="fixed bottom-0 bg-white w-full h-[100px] flex flex-row items-center justify-evenly border pb-8 text-neutral-500 text-[10px] font-sans tracking-tighter text-center">
+    <div className="fixed bottom-0 bg-white w-full h-[100px] flex flex-row items-center justify-evenly border pb-8 text-neutral-500 text-[10px] font-sans tracking-tighter text-center lg:hidden">
       <div className="flex flex-col items-center justify-center hover:scale-95 transition">
         <button onClick={() => navigate("/dashboard")}>
           <DashboardRoundedIcon
@@ -68,7 +68,7 @@ const MobileNav = () => {
           </p>
         </button>
       </div>
-      <div className="flex flex-col items-center justify-center hover:scale-95 transition">
+      {/* <div className="flex flex-col items-center justify-center hover:scale-95 transition">
         <button onClick={() => navigate("/analytics")}>
           <TimelineRoundedIcon
             fontSize="medium"
@@ -86,9 +86,13 @@ const MobileNav = () => {
             Analytics
           </p>
         </button>
-      </div>
+      </div> */}
       <div className="flex flex-col items-center justify-center hover:scale-95 transition">
-        <button onClick={() => auth.logout()}>
+        <button
+          onClick={() => {
+            auth.logout();
+          }}
+        >
           <ExitToAppRoundedIcon
             fontSize="medium"
             className="text-neutral-500"

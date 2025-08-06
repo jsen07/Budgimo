@@ -331,6 +331,7 @@ const resolvers = {
         const monthCurrency = month.currency.toLowerCase();
         const expenseCurrency = currency.toLowerCase();
         let rate = 1;
+        let targetRate;
 
         let convertedAmount = parsedAmount;
 
@@ -344,6 +345,7 @@ const resolvers = {
 
           const data = await response.json();
           rate = data[expenseCurrency][monthCurrency];
+          targetRate = data[monthCurrency][expenseCurrency];
 
           if (!rate) {
             throw new ApolloError("Conversion rate not available");
@@ -517,9 +519,27 @@ const resolvers = {
 
     deleteExpense: async (parent, { id }, context) => {
       try {
-        const deleteExpense = await Expense.findByIdAndDelete(id);
+        const expense = await Expense.findById(id).populate("month");
+        if (!expense) {
+          throw new Error("Expense not found");
+        }
+        const expenseValue = expense.amount * expense.rate;
 
-        return deleteExpense;
+        const month = await Month.findById(expense.monthId);
+        if (!month) {
+          throw new Error("Associated month not found");
+        }
+
+        if (expense.moneyOut) {
+          month.balance += expenseValue;
+        } else {
+          month.balance -= expenseValue;
+        }
+        await month.save();
+
+        await Expense.findByIdAndDelete(id);
+
+        return expense;
       } catch (error) {
         throw new Error(error.message);
       }

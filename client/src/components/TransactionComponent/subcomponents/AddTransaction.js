@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useQuery, useMutation } from "@apollo/client";
+import { addTransaction } from "../../../store/expenseSlice";
+import { addExpenseMonth } from "../../../store/monthSlice";
+import { useDispatch, useSelector } from "react-redux";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import {
   getMonthsByUser,
@@ -11,6 +14,7 @@ var cc = require("currency-codes");
 
 const AddTransaction = ({ toggleAddTransactionMenu, user }) => {
   const currencyCodes = cc.codes();
+  const dispatch = useDispatch();
   const [categories, setCategories] = useState([]);
   const [months, setMonths] = useState([]);
   const [isMonthSelected, setIsMonthSelected] = useState(false);
@@ -132,6 +136,28 @@ const AddTransaction = ({ toggleAddTransactionMenu, user }) => {
       });
 
       if (data) {
+        console.log(data.addExpense);
+        dispatch(addTransaction(data.addExpense));
+        dispatch(
+          addExpenseMonth(
+            {
+              id: data.addExpense.id,
+              name: data.addExpense.name,
+              currency: data.addExpense.currency,
+              rate: data.addExpense.rate,
+              amount: data.addExpense.amount,
+              moneyOut: data.addExpense.moneyOut,
+              date: data.addExpense.date,
+              category: {
+                id: data.addExpense.category.id,
+                name: data.addExpense.category.name,
+              },
+              monthId: data.addExpense.month.id,
+            },
+            data.addExpense.month.id
+          )
+        );
+
         toggleAddTransactionMenu();
       }
     } catch (error) {
@@ -273,7 +299,7 @@ const AddTransaction = ({ toggleAddTransactionMenu, user }) => {
           <button
             type="submit"
             onClick={handleSubmit}
-            className="bg-teal-500 text-white p-2 rounded hover:bg-blue-600"
+            className="bg-teal-500 hover:bg-teal-600 text-white p-2 rounded"
             disabled={
               !formData.description ||
               !formData.amount ||

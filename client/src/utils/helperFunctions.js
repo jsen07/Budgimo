@@ -1,3 +1,4 @@
+const getSymbolFromCurrency = require("currency-symbol-map");
 export const getRandomColor = () => {
   const colors = [
     "orange-500",
@@ -7,6 +8,103 @@ export const getRandomColor = () => {
     "rose-500",
   ];
   return colors[Math.floor(Math.random() * colors.length)];
+};
+
+function capitalizeEachWord(text) {
+  return text
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+export const getTotalSpendings = (month) => {
+  if (month.expenses && month.expenses.length > 0) {
+    const total = month.expenses.reduce((acc, expense) => {
+      const amount = expense.amount || 0;
+      const rate = expense.rate;
+      const converted = amount * rate;
+
+      return expense.moneyOut ? acc + converted : acc;
+    }, 0);
+    return total;
+  } else {
+    return 0;
+  }
+};
+
+export const getHighestExpense = (month) => {
+  if (month.expenses && month.expenses.length > 0) {
+    const moneyOutExpenses = month.expenses.filter((e) => e.moneyOut);
+
+    if (moneyOutExpenses.length === 0) return null;
+
+    const highest = moneyOutExpenses.reduce((highest, expense) => {
+      const currentConverted =
+        parseFloat(expense.amount) * parseFloat(expense.rate || 1);
+      const highestConverted =
+        parseFloat(highest.amount) * parseFloat(highest.rate || 1);
+
+      return currentConverted > highestConverted ? expense : highest;
+    });
+
+    return {
+      ...highest,
+      convertedAmount:
+        parseFloat(highest.amount) * parseFloat(highest.rate || 1),
+    };
+  }
+};
+export const getTotalEarnings = (month) => {
+  if (month.expenses && month.expenses.length > 0) {
+    const total = month.expenses.reduce((acc, expense) => {
+      const amount = parseFloat(expense.amount) || 0;
+      const rate = expense.rate;
+      const converted = amount * rate;
+
+      return !expense.moneyOut ? acc + converted : acc;
+    }, 0);
+    return total;
+  } else {
+    return 0;
+  }
+};
+
+export const getTotalExpenseCategory = (month) => {
+  const totals = {};
+
+  month.expenses.forEach((expense) => {
+    const category = expense.category?.name;
+    const rate = parseFloat(expense.rate) || 1;
+    const amount = parseFloat(expense.amount) || 0;
+    const adjustedAmount = amount * rate;
+
+    if (!totals[category]) {
+      totals[category] = {
+        income: 0,
+        expense: 0,
+      };
+    }
+
+    expense.moneyOut
+      ? (totals[category].expense += adjustedAmount)
+      : (totals[category].income += adjustedAmount);
+  });
+
+  return Object.entries(totals).map(([category, { income, expense }]) => {
+    const symbol = getSymbolFromCurrency(month?.currency);
+    const net = income - expense;
+
+    const formatAmount = (amount) => {
+      const sign = amount < 0 ? "-" : "";
+      return `${sign} ${symbol}${Math.abs(amount).toFixed(2)}`;
+    };
+
+    return {
+      category,
+      income: formatAmount(income),
+      expense: formatAmount(expense),
+      net: formatAmount(net),
+    };
+  });
 };
 
 export const formatDateShort = (timestamp) => {
