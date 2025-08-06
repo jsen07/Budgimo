@@ -6,12 +6,15 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
+import NavigationLinks from "./components/NavigationComponent/NavigationLinks";
+import MobileNavWrapper from "./components/NavigationComponent/MobileNavWrapper";
 import LandingPage from "./components/LandingPageComponent/LandingPage";
 import LoginRegisterForm from "./components/LoginRegisterComponent/LoginRegisterForm";
 import Dashboard from "./components/DashboardComponent/Dashboard";
 import Transactions from "./components/TransactionComponent/Transactions";
 import EditTransaction from "./components/EditTransactionComponent/EditTransaction";
 import Schedule from "./components/ScheduleComponent/Schedule";
+import Charts from "./components/AnalyticsComponent/Charts";
 import auth from "./utils/auth/auth";
 import FsLoading from "./components/Loaders/FsLoading";
 
@@ -36,12 +39,24 @@ function App() {
 
   useEffect(() => {
     const token = auth.getToken();
-    if (token && !auth.isTokenExpired(token)) {
-      setIsAuthenticated(true);
-    } else {
+
+    if (!token || auth.isTokenExpired(token)) {
+      localStorage.removeItem("monthSlice");
+      localStorage.removeItem("expenseSlice");
       setIsAuthenticated(false);
+    } else {
+      setIsAuthenticated(true);
     }
   }, []);
+
+  // useEffect(() => {
+  //   const token = auth.getToken();
+  //   if (token && !auth.isTokenExpired(token)) {
+  //     setIsAuthenticated(true);
+  //   } else {
+  //     setIsAuthenticated(false);
+  //   }
+  // }, []);
 
   if (isAuthenticated === null) {
     return <FsLoading />;
@@ -54,17 +69,30 @@ function App() {
   return (
     <ApolloProvider client={client}>
       <Router>
-        <div>
+        <div className="flex flex-col w-full 2xl:flex-row">
+          {/* <div class="fixed top-0 left-0 z-50 bg-black text-white text-base px-10 py-1 rounded-br">
+            <div class="block sm:hidden">XS</div>
+            <div class="hidden sm:block md:hidden">SM</div>
+            <div class="hidden md:block lg:hidden">MD</div>
+            <div class="hidden lg:block xl:hidden">LG</div>
+            <div class="hidden xl:block 2xl:hidden">XL</div>
+            <div class="hidden 2xl:block">2XL</div>
+          </div> */}
+          {isAuthenticated && (
+            <div className="hidden 2xl:flex bg-neutral-800">
+              <NavigationLinks />
+            </div>
+          )}
+
           <Routes>
-            {/* Redirect to Dashboard if logged in, otherwise show login/register */}
-            <Route
+            {/* <Route
               path="/"
               element={
                 isAuthenticated ? <Navigate to="/dashboard" /> : <LandingPage />
               }
-            />
+            /> */}
             <Route
-              path="/login"
+              path="/"
               element={
                 isAuthenticated ? (
                   <Navigate to="/dashboard" />
@@ -93,7 +121,13 @@ function App() {
               path="/schedule"
               element={isAuthenticated ? <Schedule /> : <Navigate to="/" />}
             />
+
+            <Route
+              path="/analytics"
+              element={isAuthenticated ? <Charts /> : <Navigate to="/" />}
+            />
           </Routes>
+          <MobileNavWrapper />
         </div>
       </Router>
     </ApolloProvider>

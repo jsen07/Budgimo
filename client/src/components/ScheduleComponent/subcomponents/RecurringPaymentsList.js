@@ -58,20 +58,20 @@ const RecurringPaymentsList = ({ user, month, filter }) => {
 
     return Object.entries(grouped).map(([frequence, payments]) => (
       <div key={frequence} className="mb-4 w-full">
-        <h2 className="text-md font-semibold tracking-tighter mb-2">
-          {frequence}
-        </h2>
         {payments.map((payment) => (
           <div
             key={payment.id}
-            className="flex flex-row justify-between items-center shadow-xl border rounded-lg py-3 px-4 mb-2 bg-neutral-800"
+            className="flex flex-row justify-between items-center shadow border rounded-lg py-3 px-4 mb-2"
           >
-            <h1 className="font-semibold text-teal-500">{payment.name}</h1>
+            <div className="flex flex-col text-sm font-semibold text-black">
+              <h2 className="text-neutral-500">{frequence}</h2>
+              <h1>{payment.name}</h1>
+            </div>
             <div className="flex flex-col text-right">
-              <h1 className="font-semibold text-xs text-blue-400">
+              <h1 className="font-semibold text-xs text-neutral-500">
                 {formatDateToDayMonth(payment.date)}
               </h1>
-              <p className="font-semibold text-white"> - £{payment.amount}</p>
+              <p className="font-semibold text-black"> - £{payment.amount}</p>
             </div>
           </div>
         ))}
@@ -112,9 +112,9 @@ const RecurringPaymentsList = ({ user, month, filter }) => {
         </>
       )}
 
-      {!recurringPaymentLoading && data && recurringPayments.length === 0 && (
+      {/* {!recurringPaymentLoading && data && recurringPayments.length === 0 && (
         <h1 className="font-semibold">No recurring payments.</h1>
-      )}
+      )} */}
     </>
   );
 };

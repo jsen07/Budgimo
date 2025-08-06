@@ -125,7 +125,7 @@ const typeDefs = gql`
       monthId: ID!
     ): Expense!
     editExpense(id: ID!, userData: ExpenseInput!): Expense
-    deleteExpense(id: ID!): Expense
+    deleteExpense(id: ID!): Expense!
   }
 `;
 
