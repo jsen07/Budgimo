@@ -10,7 +10,6 @@ const db = require("./config/connection");
 const { authMiddleware } = require("./utils/auth");
 
 const PORT = process.env.PORT || 3001;
-const LOCAL_IP = "0.0.0.0";
 const app = express();
 app.use(cors());
 
@@ -45,10 +44,10 @@ const startApolloServer = async () => {
 
   db.once("open", async () => {
     await seedDefaultCategories();
-    app.listen(PORT, LOCAL_IP, () => {
-      console.log(`API server running at http://${LOCAL_IP}:${PORT}`);
+    app.listen(PORT, () => {
+      console.log(`API server running at http://localhost:${PORT}`);
       console.log(
-        `GraphQL Playground: http://${LOCAL_IP}:${PORT}${server.graphqlPath}`
+        `GraphQL Playground: http://localhost:${PORT}${server.graphqlPath}`
       );
     });
   });
